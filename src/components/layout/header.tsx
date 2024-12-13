@@ -1,29 +1,79 @@
-const Header: React.FC = () => {
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Boxes, Search, User } from "lucide-react";
+import { Link } from "react-router";
+
+export function Header() {
     return (
-        <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-white shadow-sm">
-            <div className="flex items-center gap-x-4">
-                <img
-                    src="https://avatars.githubusercontent.com/u/101882283?v=4"
-                    alt="logo"
-                    className="h-8 w-8"
-                />
-                <h1 className="text-2xl font-bold">Autoctono</h1>
-            </div>
-            <div className="flex items-center gap-x-4">
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    Home
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    About
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    Portfolio
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    Contact
-                </a>
+        <header className="border-b">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-16">
+                    <div className="flex items-center">
+                        <Link to="/" className="flex items-center">
+                            <Boxes className="h-8 w-8 text-primary" />
+                            <span className="ml-2 text-xl font-bold text-gray-900">
+                                CeramicStock
+                            </span>
+                        </Link>
+                        <nav className="hidden md:ml-6 md:flex md:space-x-4">
+                            <Link
+                                to="/inventory"
+                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                            >
+                                Inventory
+                            </Link>
+                            <Link
+                                to="/orders"
+                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                            >
+                                Orders
+                            </Link>
+                            <Link
+                                to="/suppliers"
+                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                            >
+                                Suppliers
+                            </Link>
+                            <Link
+                                to="/reports"
+                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
+                            >
+                                Reports
+                            </Link>
+                        </nav>
+                    </div>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="ml-4"
+                            >
+                                <User className="h-5 w-5" />
+                                <span className="sr-only">User menu</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Profile</DropdownMenuItem>
+                            <DropdownMenuItem>Settings</DropdownMenuItem>
+                            <DropdownMenuItem>Log out</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
         </header>
     );
-};
+}
+
 export default Header;
