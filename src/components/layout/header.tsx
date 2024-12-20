@@ -1,79 +1,84 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { User, PocketKnife } from "lucide-react";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Boxes, Search, User } from "lucide-react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 export function Header() {
     return (
-        <header className="border-b">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="fixed top-0 w-full bg-ceramic-light border-b border-ceramic-sand/20 backdrop-blur-sm z-50">
+            <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16">
-                    <div className="flex items-center">
-                        <Link to="/" className="flex items-center">
-                            <Boxes className="h-8 w-8 text-primary" />
-                            <span className="ml-2 text-xl font-bold text-gray-900">
-                                CeramicStock
-                            </span>
-                        </Link>
-                        <nav className="hidden md:ml-6 md:flex md:space-x-4">
-                            <Link
-                                to="/inventory"
-                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-                            >
-                                Inventory
-                            </Link>
-                            <Link
-                                to="/orders"
-                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-                            >
-                                Orders
-                            </Link>
-                            <Link
-                                to="/suppliers"
-                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-                            >
-                                Suppliers
-                            </Link>
-                            <Link
-                                to="/reports"
-                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
-                            >
-                                Reports
-                            </Link>
-                        </nav>
-                    </div>
+                    <Link
+                        to="/"
+                        className="flex items-center space-x-2 text-ceramic-terracotta hover:text-ceramic-clay transition-colors"
+                    >
+                        <PocketKnife className="h-6 w-6" />
+                        <span className="text-xl font-serif">Autóctono</span>
+                    </Link>
 
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                    <nav className="hidden md:flex space-x-8">
+                        {[
+                            ["Inventario", "/inventory"],
+                            ["Pedidos", "/orders"],
+                            ["Proveedores", "/suppliers"],
+                        ].map(([title, url]) => (
+                            <Link
+                                key={url}
+                                to={url}
+                                className="text-ceramic-clay hover:text-ceramic-terracotta transition-colors text-sm font-medium"
+                            >
+                                {title}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <div className="flex items-center space-x-4">
+                        <Link to="/login">
                             <Button
                                 variant="ghost"
-                                size="icon"
-                                className="ml-4"
+                                className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10 font-medium"
                             >
-                                <User className="h-5 w-5" />
-                                <span className="sr-only">User menu</span>
+                                Iniciar Sesión
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Profile</DropdownMenuItem>
-                            <DropdownMenuItem>Settings</DropdownMenuItem>
-                            <DropdownMenuItem>Log out</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </Link>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10"
+                                >
+                                    <User className="h-5 w-5" />
+                                    <span className="sr-only">
+                                        Menú de usuario
+                                    </span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="end"
+                                className="w-56 bg-ceramic-light border-ceramic-sand/20"
+                            >
+                                <DropdownMenuItem className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10">
+                                    Mi Perfil
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10">
+                                    Configuración
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator className="bg-ceramic-sand/20" />
+                                <DropdownMenuItem className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10">
+                                    Cerrar Sesión
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </div>
         </header>
     );
 }
-
-export default Header;
