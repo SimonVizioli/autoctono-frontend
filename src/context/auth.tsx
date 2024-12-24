@@ -1,5 +1,5 @@
 // src/context/auth-context.tsx
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -14,8 +14,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const login = () => setIsAuthenticated(true);
-    const logout = () => setIsAuthenticated(false);
+    // Cargar el estado de autenticación desde localStorage
+    useEffect(() => {
+        const storedAuth = localStorage.getItem("isAuthenticated");
+        if (storedAuth === "true") {
+            setIsAuthenticated(true);
+        }
+    }, []);
+
+    const login = () => {
+        setIsAuthenticated(true);
+        localStorage.setItem("isAuthenticated", "true"); // Simula persistencia
+    };
+
+    const logout = () => {
+        setIsAuthenticated(false);
+        localStorage.removeItem("isAuthenticated"); // Limpia el estado simulado
+    };
 
     return (
         <AuthContext.Provider value={{ isAuthenticated, login, logout }}>

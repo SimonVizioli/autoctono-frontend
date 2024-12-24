@@ -1,12 +1,13 @@
 // src/main.tsx
+import "@/index.css"; // Asegúrate de que este archivo existe y está configurado
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
-import "@/index.css"; // Asegúrate de que este archivo existe y está configurado
-import { AuthProvider, useAuth } from "./context/auth";
-import LoginPage from "./components/pages/login";
 import App from "./App";
 import ErrorPage from "./components/error";
+import LoginPage from "./components/pages/login";
+import { Toaster } from "./components/ui/toaster";
+import { AuthProvider, useAuth } from "./context/auth";
 
 // Componente para rutas protegidas
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
@@ -28,17 +29,17 @@ const router = createHashRouter([
                 errorElement: <ErrorPage />,
             },
             {
-                path: "productos",
+                path: "products",
                 element: <ProtectedRoute element={<div>productos</div>} />,
                 errorElement: <ErrorPage />,
             },
             {
-                path: "clientes",
+                path: "customers",
                 element: <ProtectedRoute element={<div>clientes</div>} />,
                 errorElement: <ErrorPage />,
             },
             {
-                path: "ventas",
+                path: "sells",
                 element: <ProtectedRoute element={<div>ventas</div>} />,
                 errorElement: <ErrorPage />,
             },
@@ -50,6 +51,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <AuthProvider>
             <RouterProvider router={router} />
+            <Toaster />
         </AuthProvider>
     </React.StrictMode>
 );

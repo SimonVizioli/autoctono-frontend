@@ -1,17 +1,14 @@
-// src/components/Layout.tsx
 import React from "react";
+import Header from "./header";
 import { Outlet } from "react-router-dom";
-import { Header } from "./header";
 
-const Layout: React.FC = () => {
-    return (
-        <>
-            <Header />
-            <main>
-                <Outlet />
-            </main>
-        </>
-    );
-};
+const Layout: React.FC = () => (
+    <>
+        <Header />
+        <main className="pt-16">
+            <Outlet />
+        </main>
+    </>
+);
 
 export default Layout;
