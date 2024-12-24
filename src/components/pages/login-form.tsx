@@ -63,7 +63,7 @@ const LoginForm: React.FC = () => {
             toast({
                 title: "Inicio de sesión exitoso",
                 description: "¡Bienvenido a Autóctono!",
-                // status: "success",
+                variant: "default",
             });
             setTimeout(() => {
                 setIsLoading(false);
@@ -74,7 +74,7 @@ const LoginForm: React.FC = () => {
             toast({
                 title: "Error de inicio de sesión",
                 description: "Credenciales inválidas. Intenta de nuevo.",
-                // status: "error",
+                variant: "destructive",
             });
             form.setError("email", { message: "Credenciales inválidas" });
             form.setError("password", { message: "" });

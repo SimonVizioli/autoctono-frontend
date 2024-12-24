@@ -43,6 +43,11 @@ const router = createHashRouter([
                 element: <ProtectedRoute element={<div>ventas</div>} />,
                 errorElement: <ErrorPage />,
             },
+            {
+                path: "settings",
+                element: <ProtectedRoute element={<div>Settings</div>} />,
+                errorElement: <ErrorPage />,
+            },
         ],
     },
 ]);

@@ -5,6 +5,7 @@ import { PocketKnife } from "lucide-react";
 import { Link } from "react-router-dom";
 import NavigationMenu from "./navigation-menu";
 import UserDropdownMenu from "./user-dropwdown-menu";
+import ThemeSwitcher from "./theme-switcher";
 
 export function Header() {
     const { isAuthenticated } = useAuth();
@@ -33,6 +34,7 @@ export function Header() {
                             </Button>
                         </Link>
                     )}
+                    <ThemeSwitcher />
                 </div>
             </div>
         </header>

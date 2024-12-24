@@ -7,8 +7,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User } from "lucide-react";
+import { User, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/context/auth";
+import { Link } from "react-router-dom";
 
 const UserDropdownMenu: React.FC = () => {
     const { logout } = useAuth();
@@ -27,13 +28,24 @@ const UserDropdownMenu: React.FC = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 align="end"
-                className="w-56 bg-ceramic-light border-ceramic-sand/20"
+                className="w-56 bg-ceramic-light border-ceramic-sand/20 shadow-md"
             >
-                <DropdownMenuItem>Mi Perfil</DropdownMenuItem>
-                <DropdownMenuItem>Configuración</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link
+                        to="/settings"
+                        className="flex items-center space-x-2"
+                    >
+                        <Settings className="h-4 w-4 text-ceramic-clay" />
+                        <span>Configuración</span>
+                    </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
-                    Cerrar Sesión
+                <DropdownMenuItem
+                    onClick={logout}
+                    className="flex items-center space-x-2"
+                >
+                    <LogOut className="h-4 w-4 text-ceramic-clay" />
+                    <span>Cerrar Sesión</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
