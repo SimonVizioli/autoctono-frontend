@@ -4,10 +4,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
-import ErrorPage from "./components/error";
-import LoginPage from "./components/pages/login";
+import ErrorPage from "./components/pages/error";
+import LoginPage from "./components/pages/login/login";
 import { Toaster } from "./components/ui/toaster";
-import { AuthProvider, useAuth } from "./context/auth";
+import { AuthProvider } from "./context/auth";
+import useAuth from "./hooks/use-auth";
 
 // Componente para rutas protegidas
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {

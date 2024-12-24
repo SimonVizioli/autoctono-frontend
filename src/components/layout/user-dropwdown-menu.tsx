@@ -7,8 +7,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import useAuth from "@/hooks/use-auth";
 import { User, Settings, LogOut } from "lucide-react";
-import { useAuth } from "@/context/auth";
 import { Link } from "react-router-dom";
 
 const UserDropdownMenu: React.FC = () => {

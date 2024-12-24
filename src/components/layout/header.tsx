@@ -1,11 +1,11 @@
 // src/Header/Header.tsx
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/auth";
 import { PocketKnife } from "lucide-react";
 import { Link } from "react-router-dom";
 import NavigationMenu from "./navigation-menu";
 import UserDropdownMenu from "./user-dropwdown-menu";
 import ThemeSwitcher from "./theme-switcher";
+import useAuth from "@/hooks/use-auth";
 
 export function Header() {
     const { isAuthenticated } = useAuth();
