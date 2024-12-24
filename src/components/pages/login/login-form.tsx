@@ -67,7 +67,7 @@ const LoginForm: React.FC = () => {
             });
             setTimeout(() => {
                 setIsLoading(false);
-                navigate("/stock");
+                navigate("/");
             }, 1000);
         } else {
             setIsLoading(false);

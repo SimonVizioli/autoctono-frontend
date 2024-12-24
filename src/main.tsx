@@ -9,6 +9,7 @@ import LoginPage from "./components/pages/login/login";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./context/auth";
 import useAuth from "./hooks/use-auth";
+import Dashboard from "./components/pages/home/home";
 
 // Componente para rutas protegidas
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
@@ -24,6 +25,11 @@ const router = createHashRouter([
         errorElement: <ErrorPage />,
         children: [
             { path: "login", element: <LoginPage /> },
+            {
+                path: "",
+                element: <ProtectedRoute element={<Dashboard />} />,
+                errorElement: <ErrorPage />,
+            },
             {
                 path: "stock",
                 element: <ProtectedRoute element={<div>stock</div>} />,
