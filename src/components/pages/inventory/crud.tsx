@@ -28,6 +28,11 @@ const InventoryPage: React.FC = () => {
 
     return (
         <Crud
+            title={
+                <h1 className="text-2xl font-bold mb-4">
+                    Gestión de Inventario
+                </h1>
+            }
             columns={[
                 { key: "producto", label: "Producto" },
                 { key: "cantidad", label: "Cantidad (gramos)" },

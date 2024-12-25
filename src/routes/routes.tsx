@@ -6,7 +6,7 @@ import LoginPage from "@/components/pages/login/login";
 import { createHashRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-routes";
 import Inventory from "@/components/pages/inventory/crud";
-import Sales from "@/components/pages/sales/sales";
+import Sales from "@/components/pages/sales/crud";
 import Customers from "@/components/pages/customers/crud";
 
 // Configuración de rutas

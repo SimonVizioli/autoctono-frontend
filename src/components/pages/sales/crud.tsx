@@ -29,6 +29,9 @@ const SalesPage: React.FC = () => {
 
     return (
         <Crud
+            title={
+                <h1 className="text-2xl font-bold mb-4">Gestión de Ventas</h1>
+            }
             columns={[
                 { key: "detalle", label: "Detalle" },
                 { key: "total", label: "Total" },

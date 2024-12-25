@@ -6,7 +6,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -140,16 +139,6 @@ const LoginForm: React.FC = () => {
                     </form>
                 </Form>
             </CardContent>
-            <CardFooter>
-                <p className="px-8 text-center text-sm text-ceramic-clay">
-                    <a
-                        href="/forgot-password"
-                        className="hover:text-ceramic-terracotta underline underline-offset-4"
-                    >
-                        ¿Olvidaste tu contraseña?
-                    </a>
-                </p>
-            </CardFooter>
         </Card>
     );
 };
