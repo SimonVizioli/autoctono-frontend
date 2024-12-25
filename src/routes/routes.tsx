@@ -7,7 +7,7 @@ import { createHashRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-routes";
 import Inventory from "@/components/pages/inventory/inventory";
 import Sales from "@/components/pages/sales/sales";
-import Customers from "@/components/pages/customers/customers";
+import Customers from "@/components/pages/customers/crud";
 
 // Configuración de rutas
 const router = createHashRouter([

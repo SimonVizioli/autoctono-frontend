@@ -8,12 +8,18 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-interface ShadcnTableProps<T> {
-    data: T[];
-    columns: { key: keyof T; label: string }[];
+interface TableColumn<T> {
+    key: keyof T;
+    label: string;
+    render?: (item: T) => React.ReactNode; // Agregamos soporte para render personalizado
 }
 
-const ShadcnTable = <T,>({ data, columns }: ShadcnTableProps<T>) => {
+interface CustomTableProps<T> {
+    data: T[];
+    columns: TableColumn<T>[];
+}
+
+const CustomTable = <T,>({ data, columns }: CustomTableProps<T>) => {
     return (
         <div className="overflow-x-auto">
             <Table>
@@ -32,7 +38,9 @@ const ShadcnTable = <T,>({ data, columns }: ShadcnTableProps<T>) => {
                             <TableRow key={rowIndex}>
                                 {columns.map((col) => (
                                     <TableCell key={String(col.key)}>
-                                        {String(row[col.key])}
+                                        {col.render
+                                            ? col.render(row)
+                                            : String(row[col.key])}
                                     </TableCell>
                                 ))}
                             </TableRow>
@@ -53,4 +61,4 @@ const ShadcnTable = <T,>({ data, columns }: ShadcnTableProps<T>) => {
     );
 };
 
-export default ShadcnTable;
+export default CustomTable;

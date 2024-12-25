@@ -1,5 +1,5 @@
 // src/pages/sales/sales.tsx
-import ShadcnTable from "@/utils/table/shadcn-table";
+import CustomTable from "@/utils/table/custom-table";
 import { fakeSales } from "@/data/fake-data";
 import React, { useEffect, useState } from "react";
 
@@ -34,7 +34,7 @@ const Sales: React.FC = () => {
     return (
         <div className="container mx-auto py-6">
             <h1 className="text-2xl font-bold mb-4">Ventas</h1>
-            <ShadcnTable data={fakeSales} columns={columns} />
+            <CustomTable data={fakeSales} columns={columns} />
         </div>
     );
 };
