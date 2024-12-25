@@ -1,10 +1,13 @@
+// src/pages/login/login.tsx
+import React from "react";
 import LoginForm from "./login-form";
 
-const LoginPage = () => {
+const Login: React.FC = () => {
     return (
-        <div className="flex items-center justify-center min-h-screen bg-ceramic-light">
+        <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
             <LoginForm />
         </div>
     );
 };
-export default LoginPage;
+
+export default Login;

@@ -1,5 +1,6 @@
 // src/context/auth-context.tsx
 import React, { createContext, useEffect, useState } from "react";
+import { fakeUser } from "@/data/fake-user";
 
 interface User {
     name: string;
@@ -9,7 +10,7 @@ interface User {
 interface AuthContextType {
     isAuthenticated: boolean;
     user: User | null;
-    login: () => void;
+    login: (email: string, password: string) => boolean;
     logout: () => void;
 }
 
@@ -23,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState<User | null>(null);
 
-    // Cargar el estado de autenticación y usuario desde localStorage
+    // Cargar el estado de autenticación desde localStorage
     useEffect(() => {
         const storedAuth = localStorage.getItem("isAuthenticated");
         const storedUser = localStorage.getItem("user");
@@ -33,12 +34,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     }, []);
 
-    const login = () => {
-        const fakeUser = { name: "John Doe", email: "john.doe@example.com" }; // Usuario simulado
-        setIsAuthenticated(true);
-        setUser(fakeUser);
-        localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("user", JSON.stringify(fakeUser));
+    const login = (email: string, password: string): boolean => {
+        if (email === fakeUser.email && password === fakeUser.password) {
+            setIsAuthenticated(true);
+            setUser({ name: fakeUser.name, email: fakeUser.email });
+            localStorage.setItem("isAuthenticated", "true");
+            localStorage.setItem(
+                "user",
+                JSON.stringify({ name: fakeUser.name, email: fakeUser.email })
+            );
+            return true;
+        }
+        return false;
     };
 
     const logout = () => {

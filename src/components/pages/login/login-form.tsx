@@ -1,4 +1,4 @@
-// src/components/login-form.tsx
+// src/pages/login/login-form.tsx
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { fakeUser } from "@/data/fake-user";
 
 const loginSchema = z.object({
     email: z.string().email("Ingresa un correo válido"),
@@ -48,18 +49,13 @@ const LoginForm: React.FC = () => {
         },
     });
 
-    const fakeUser = {
-        email: "admin@autoctono.com",
-        password: "admin123",
-    };
-
     const onSubmit = async (values: { email: string; password: string }) => {
         setIsLoading(true);
         if (
             values.email === fakeUser.email &&
             values.password === fakeUser.password
         ) {
-            login();
+            login(values.email, values.password);
             toast({
                 title: "Inicio de sesión exitoso",
                 description: "¡Bienvenido a Autóctono!",
