@@ -5,7 +5,7 @@ import Dashboard from "@/components/pages/home/home";
 import LoginPage from "@/components/pages/login/login";
 import { createHashRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-routes";
-import Inventory from "@/components/pages/inventory/inventory";
+import Inventory from "@/components/pages/inventory/crud";
 import Sales from "@/components/pages/sales/sales";
 import Customers from "@/components/pages/customers/crud";
 

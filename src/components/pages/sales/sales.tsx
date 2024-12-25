@@ -1,42 +1,55 @@
-// src/pages/sales/sales.tsx
-import CustomTable from "@/utils/table/custom-table";
+// src/components/pages/sales/sales.tsx
+import React, { useState } from "react";
+import Crud from "@/utils/crud/crud";
+import SalesForm from "./form";
+import { Sales } from "@/types/sales";
+import ActionsColumn from "@/utils/actions/action-column";
 import { fakeSales } from "@/data/fake-data";
-import React, { useEffect, useState } from "react";
 
-interface Sale {
-    id: string;
-    detalle: string;
-    total: number;
-    clienteNombre: string;
-    estado: string;
-}
+const SalesPage: React.FC = () => {
+    const [sales, setSales] = useState<Sales[]>(fakeSales);
 
-const Sales: React.FC = () => {
-    const [sales, setSales] = useState<Sale[]>([]);
+    const fetchAll = async () => sales;
 
-    useEffect(() => {
-        fetch("/api/sales", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => setSales(data));
-    }, []);
+    const create = async (data: Sales) => {
+        setSales([...sales, { ...data, id: Date.now().toString() }]);
+    };
 
-    const columns: { key: keyof Sale; label: string }[] = [
-        { key: "detalle", label: "Detalle" },
-        { key: "clienteNombre", label: "Cliente" },
-        { key: "estado", label: "Estado" },
-        { key: "total", label: "Total" },
-    ];
+    const update = async (updatedItem: Sales) => {
+        setSales(
+            sales.map((item) =>
+                item.id === updatedItem.id ? updatedItem : item
+            )
+        );
+    };
+
+    const deleteEntry = async (id: string) => {
+        setSales(sales.filter((item) => item.id !== id));
+    };
 
     return (
-        <div className="container mx-auto py-6">
-            <h1 className="text-2xl font-bold mb-4">Ventas</h1>
-            <CustomTable data={fakeSales} columns={columns} />
-        </div>
+        <Crud
+            columns={[
+                { key: "detalle", label: "Detalle" },
+                { key: "total", label: "Total" },
+                { key: "cliente_id", label: "Cliente" },
+                { key: "estado_id", label: "Estado" },
+            ]}
+            data={sales}
+            fetchAll={fetchAll}
+            create={create}
+            update={update}
+            deleteEntry={deleteEntry}
+            FormComponent={SalesForm}
+            renderActionsColumn={(item) => (
+                <ActionsColumn
+                    item={item}
+                    onEdit={(item) => console.log("Editar", item)}
+                    onDelete={(id) => console.log("Eliminar", id)}
+                />
+            )}
+        />
     );
 };
 
-export default Sales;
+export default SalesPage;

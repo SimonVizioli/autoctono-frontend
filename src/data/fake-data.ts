@@ -13,20 +13,21 @@ export const fakeInventory: Inventory[] = [
     { id: "3", cantidad: 25, producto: "Cerámica Blanca" },
 ];
 
+// src/data/fake-data.ts
 export const fakeSales = [
     {
         id: "1",
-        detalle: "Venta de Arcilla Roja",
-        clienteNombre: "Juan Pérez",
-        estado: "Finalizada",
-        total: 500,
+        detalle: "Venta de arcilla",
+        total: 200.0,
+        cliente_id: "1",
+        estado_id: "3",
     },
     {
         id: "2",
-        detalle: "Venta de Pintura Acrílica",
-        clienteNombre: "María López",
-        estado: "Pendiente",
-        total: 300,
+        detalle: "Venta de cerámica",
+        total: 500.5,
+        cliente_id: "2",
+        estado_id: "2",
     },
 ];
 
