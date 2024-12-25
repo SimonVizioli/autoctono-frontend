@@ -8,7 +8,7 @@ interface ActionColumnProps<T> {
     onDelete: (id: string) => void;
 }
 
-const ActionsColumnColumn = <T extends { id: string }>({
+const ActionsColumn = <T extends { id: string }>({
     item,
     onEdit,
     onDelete,
@@ -25,4 +25,4 @@ const ActionsColumnColumn = <T extends { id: string }>({
     );
 };
 
-export default ActionsColumnColumn;
+export default ActionsColumn;

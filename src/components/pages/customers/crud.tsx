@@ -1,10 +1,10 @@
 // src/pages/customers/customers.tsx
+import { fakeCustomers } from "@/data/fake-data";
+import { Customer } from "@/types/customer";
+import ActionsColumn from "@/utils/actions/action-column";
+import Crud from "@/utils/crud/crud";
 import React, { useState } from "react";
 import CustomerForm from "./form";
-import { Customer } from "@/types/customer";
-import Crud from "@/utils/crud/crud";
-import { fakeCustomers } from "@/data/fake-data";
-import ActionsColumnColumn from "@/utils/actions/action-column";
 
 const Customers: React.FC = () => {
     const [customers, setCustomers] = useState<Customer[]>(fakeCustomers);
@@ -41,7 +41,7 @@ const Customers: React.FC = () => {
             deleteEntry={deleteEntry}
             FormComponent={CustomerForm}
             renderActionsColumn={(item) => (
-                <ActionsColumnColumn
+                <ActionsColumn
                     item={item}
                     onEdit={(item) => console.log("Editar", item)}
                     onDelete={(id) => console.log("Eliminar", id)}

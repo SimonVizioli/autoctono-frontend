@@ -1,38 +1,52 @@
-// src/pages/inventory/inventory.tsx
-import CustomTable from "@/utils/table/custom-table";
-import React, { useEffect, useState } from "react";
-import { fakeStocks } from "@/data/fake-data";
+import { fakeInventory } from "@/data/fake-data";
+import { Inventory } from "@/types/inventory";
+import ActionsColumn from "@/utils/actions/action-column";
+import Crud from "@/utils/crud/crud";
+import React, { useState } from "react";
+import InventoryForm from "./form";
 
-interface Stock {
-    id: string;
-    cantidad: number;
-    productoNombre: string;
-}
+const InventoryPage: React.FC = () => {
+    const [inventory, setInventory] = useState<Inventory[]>(fakeInventory);
 
-const Inventory: React.FC = () => {
-    const [stocks, setStocks] = useState<Stock[]>([]);
+    const fetchAll = async () => inventory;
 
-    useEffect(() => {
-        fetch("/api/stocks", {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => setStocks(data));
-    }, []);
+    const create = async (data: Inventory) => {
+        setInventory([...inventory, { ...data, id: Date.now().toString() }]);
+    };
 
-    const columns: { key: keyof Stock; label: string }[] = [
-        { key: "productoNombre", label: "Producto" },
-        { key: "cantidad", label: "Cantidad" },
-    ];
+    const update = async (updatedItem: Inventory) => {
+        setInventory(
+            inventory.map((item) =>
+                item.id === updatedItem.id ? updatedItem : item
+            )
+        );
+    };
+
+    const deleteEntry = async (id: string) => {
+        setInventory(inventory.filter((item) => item.id !== id));
+    };
 
     return (
-        <div className="container mx-auto py-6">
-            <h1 className="text-2xl font-bold mb-4">Inventario</h1>
-            <CustomTable data={fakeStocks} columns={columns} />
-        </div>
+        <Crud
+            columns={[
+                { key: "producto", label: "Producto" },
+                { key: "cantidad", label: "Cantidad (gramos)" },
+            ]}
+            data={inventory}
+            fetchAll={fetchAll}
+            create={create}
+            update={update}
+            deleteEntry={deleteEntry}
+            FormComponent={InventoryForm}
+            renderActionsColumn={(item) => (
+                <ActionsColumn
+                    item={item}
+                    onEdit={(item) => console.log("Editar", item)}
+                    onDelete={(id) => console.log("Eliminar", id)}
+                />
+            )}
+        />
     );
 };
 
-export default Inventory;
+export default InventoryPage;
