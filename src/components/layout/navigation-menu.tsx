@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const routes = [
     { title: "Inventario", path: "/stock" },
-    { title: "Ventas", path: "/sells" },
+    { title: "Ventas", path: "/sales" },
     { title: "Clientes", path: "/customers" },
 ];
 

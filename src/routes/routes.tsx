@@ -5,6 +5,9 @@ import Dashboard from "@/components/pages/home/home";
 import LoginPage from "@/components/pages/login/login";
 import { createHashRouter } from "react-router-dom";
 import ProtectedRoute from "./protected-routes";
+import Inventory from "@/components/pages/inventory/inventory";
+import Sales from "@/components/pages/sales/sales";
+import Customers from "@/components/pages/customers/customers";
 
 // Configuración de rutas
 const router = createHashRouter([
@@ -21,7 +24,7 @@ const router = createHashRouter([
             },
             {
                 path: "stock",
-                element: <ProtectedRoute element={<div>Stock</div>} />,
+                element: <ProtectedRoute element={<Inventory />} />,
                 errorElement: <ErrorPage />,
             },
             {
@@ -31,12 +34,12 @@ const router = createHashRouter([
             },
             {
                 path: "customers",
-                element: <ProtectedRoute element={<div>Clientes</div>} />,
+                element: <ProtectedRoute element={<Customers />} />,
                 errorElement: <ErrorPage />,
             },
             {
-                path: "sells",
-                element: <ProtectedRoute element={<div>Ventas</div>} />,
+                path: "sales",
+                element: <ProtectedRoute element={<Sales />} />,
                 errorElement: <ErrorPage />,
             },
         ],
