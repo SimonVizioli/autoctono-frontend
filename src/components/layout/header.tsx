@@ -1,29 +1,44 @@
-const Header: React.FC = () => {
+// src/Header/Header.tsx
+import { Button } from "@/components/ui/button";
+import { PocketKnife } from "lucide-react";
+import { Link } from "react-router-dom";
+import NavigationMenu from "./navigation-menu";
+import UserDropdownMenu from "./user-dropwdown-menu";
+import ThemeSwitcher from "./theme-switcher";
+import useAuth from "@/hooks/use-auth";
+
+export function Header() {
+    const { isAuthenticated } = useAuth();
+
     return (
-        <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between bg-white shadow-sm">
-            <div className="flex items-center gap-x-4">
-                <img
-                    src="https://avatars.githubusercontent.com/u/101882283?v=4"
-                    alt="logo"
-                    className="h-8 w-8"
-                />
-                <h1 className="text-2xl font-bold">Autoctono</h1>
-            </div>
-            <div className="flex items-center gap-x-4">
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    Home
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    About
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    Portfolio
-                </a>
-                <a href="#" className="text-gray-500 hover:text-gray-700">
-                    Contact
-                </a>
+        <header className="fixed top-0 w-full bg-ceramic-light border-b border-ceramic-sand/20 backdrop-blur-sm z-50 h-16">
+            <div className="container mx-auto px-4 flex items-center justify-between h-full">
+                <Link
+                    to="/"
+                    className="flex items-center space-x-2 text-ceramic-terracotta hover:text-ceramic-clay transition-colors"
+                >
+                    <PocketKnife className="h-6 w-6" />
+                    <span className="text-xl font-serif">Autóctono</span>
+                </Link>
+                <NavigationMenu />
+                <div className="flex items-center space-x-4">
+                    {isAuthenticated ? (
+                        <UserDropdownMenu />
+                    ) : (
+                        <Link to="/login">
+                            <Button
+                                variant="ghost"
+                                className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10 font-medium"
+                            >
+                                Iniciar Sesión
+                            </Button>
+                        </Link>
+                    )}
+                    <ThemeSwitcher />
+                </div>
             </div>
         </header>
     );
-};
+}
+
 export default Header;
