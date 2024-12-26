@@ -47,3 +47,28 @@ export const fakeCustomers = [
         email: "maria.lopez@example.com",
     },
 ];
+
+// src/data/fake-data.ts
+export const fakeProducts = [
+    {
+        id: "1",
+        detalle: "Producto de alta calidad",
+        nombre: "Arcilla Premium",
+        precio: 150.0,
+        tipoProducto_id: "1",
+    },
+    {
+        id: "2",
+        detalle: "Pintura acrílica para cerámica",
+        nombre: "Pintura Acrílica",
+        precio: 250.0,
+        tipoProducto_id: "2",
+    },
+    {
+        id: "3",
+        detalle: "Juego de cerámica decorativa",
+        nombre: "Cerámica Decorativa",
+        precio: 500.0,
+        tipoProducto_id: "3",
+    },
+];

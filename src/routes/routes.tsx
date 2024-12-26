@@ -8,6 +8,7 @@ import ProtectedRoute from "./protected-routes";
 import Inventory from "@/components/pages/inventory/crud";
 import Sales from "@/components/pages/sales/crud";
 import Customers from "@/components/pages/customers/crud";
+import ProductsPage from "@/components/pages/products/crud";
 
 // Configuración de rutas
 const router = createHashRouter([
@@ -29,7 +30,7 @@ const router = createHashRouter([
             },
             {
                 path: "products",
-                element: <ProtectedRoute element={<div>Productos</div>} />,
+                element: <ProtectedRoute element={<ProductsPage />} />,
                 errorElement: <ErrorPage />,
             },
             {

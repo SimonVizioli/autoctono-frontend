@@ -5,6 +5,7 @@ const routes = [
     { title: "Inventario", path: "/stock" },
     { title: "Ventas", path: "/sales" },
     { title: "Clientes", path: "/customers" },
+    { title: "Productos", path: "/products" },
 ];
 
 const NavigationMenu: React.FC = () => {
