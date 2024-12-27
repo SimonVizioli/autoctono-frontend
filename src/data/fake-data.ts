@@ -1,4 +1,5 @@
 import { Inventory } from "@/types/inventory";
+import { Sales } from "@/types/sales";
 
 // src/data/fake-data.ts
 export const fakeStocks = [
@@ -13,14 +14,17 @@ export const fakeInventory: Inventory[] = [
     { id: "3", cantidad: 25, producto: "Cerámica Blanca" },
 ];
 
-// src/data/fake-data.ts
-export const fakeSales = [
+export const fakeSales: Sales[] = [
     {
         id: "1",
         detalle: "Venta de arcilla",
         total: 200.0,
         cliente_id: "1",
         estado_id: "3",
+        productos: [
+            { producto_id: "prod1", precioUnitario: 100 },
+            { producto_id: "prod2", precioUnitario: 100 },
+        ],
     },
     {
         id: "2",
@@ -28,6 +32,10 @@ export const fakeSales = [
         total: 500.5,
         cliente_id: "2",
         estado_id: "2",
+        productos: [
+            { producto_id: "prod3", precioUnitario: 250 },
+            { producto_id: "prod4", precioUnitario: 250.5 },
+        ],
     },
 ];
 

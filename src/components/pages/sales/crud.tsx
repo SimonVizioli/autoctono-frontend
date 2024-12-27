@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Crud from "@/utils/crud/crud";
 import SalesForm from "./form";
-import { Sales } from "@/types/sales";
+import { ProductoVenta, Sales } from "@/types/sales";
 import ActionsColumn from "@/utils/actions/action-column";
 import { fakeSales } from "@/data/fake-data";
 
@@ -35,6 +35,21 @@ const SalesPage: React.FC = () => {
             columns={[
                 { key: "detalle", label: "Detalle" },
                 { key: "total", label: "Total" },
+                {
+                    key: "productos",
+                    label: "Productos",
+                    render: (row: Sales) =>
+                        row.productos && row.productos.length > 0
+                            ? row.productos
+                                  .map(
+                                      (p: ProductoVenta) =>
+                                          `Producto ID: ${
+                                              p.producto_id
+                                          } ($${p.precioUnitario.toFixed(2)})`
+                                  )
+                                  .join(", ")
+                            : "Sin productos",
+                },
                 { key: "cliente_id", label: "Cliente" },
                 { key: "estado_id", label: "Estado" },
             ]}

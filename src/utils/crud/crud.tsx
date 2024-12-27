@@ -6,7 +6,11 @@ import Modal from "../modal/modal";
 import { Button } from "@/components/ui/button";
 
 interface CrudProps<T> {
-    columns: { key: keyof T; label: string }[];
+    columns: {
+        key: keyof T;
+        label: string;
+        render?: (item: T) => React.ReactNode;
+    }[];
     data: T[];
     title?: React.ReactElement;
     fetchAll: () => Promise<T[]>;
