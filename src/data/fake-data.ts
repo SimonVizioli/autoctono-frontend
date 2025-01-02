@@ -60,23 +60,32 @@ export const fakeCustomers = [
 export const fakeProducts = [
     {
         id: "1",
+        codigo: "A",
         detalle: "Producto de alta calidad",
         nombre: "Arcilla Premium",
         precio: 150.0,
+        costos: 100.0,
+        cantidad: 10,
         tipoProducto_id: "1",
     },
     {
         id: "2",
+        codigo: "P",
         detalle: "Pintura acrílica para cerámica",
         nombre: "Pintura Acrílica",
         precio: 250.0,
+        costos: 200.0,
+        cantidad: 3,
         tipoProducto_id: "2",
     },
     {
         id: "3",
+        codigo: "C",
         detalle: "Juego de cerámica decorativa",
         nombre: "Cerámica Decorativa",
         precio: 500.0,
+        costos: 180.0,
+        cantidad: 5,
         tipoProducto_id: "3",
     },
 ];

@@ -1,4 +1,3 @@
-// src/components/pages/products/products.tsx
 import React, { useState } from "react";
 import Crud from "@/utils/crud/crud";
 import ProductForm from "./form";
@@ -27,14 +26,46 @@ const ProductsPage: React.FC = () => {
         setProducts(products.filter((item) => item.id !== id));
     };
 
+    const fakeTiposProducto = [
+        { id: "1", nombre: "Arcilla" },
+        { id: "2", nombre: "Pintura" },
+        { id: "3", nombre: "Cerámica" },
+    ];
+
     return (
         <Crud
+            title={
+                <h1 className="text-2xl font-semibold">Gestion de Productos</h1>
+            }
             columns={[
+                { key: "codigo", label: "Código" },
                 { key: "detalle", label: "Detalle" },
                 { key: "nombre", label: "Nombre" },
-                { key: "precio", label: "Precio" },
-                { key: "tipoProducto_id", label: "Tipo de Producto" },
+                {
+                    key: "precio",
+                    label: "Precio",
+                    render: (item) => `$ ${item.precio.toFixed(2)}`,
+                },
+                {
+                    key: "costos",
+                    label: "Costos",
+                    render: (item) => `$ ${item.costos.toFixed(2)}`,
+                },
+                { key: "cantidad", label: "Cantidad" },
+                {
+                    key: "tipoProducto_id",
+                    label: "Tipo de Producto",
+                    render: (item) => {
+                        const tipoProducto = fakeTiposProducto.find(
+                            (tipo) => tipo.id === item.tipoProducto_id
+                        );
+                        return tipoProducto
+                            ? tipoProducto.nombre
+                            : "Desconocido";
+                    },
+                },
             ]}
+            customModalHeader={"Crear nuevo producto"}
             data={products}
             fetchAll={fetchAll}
             create={create}

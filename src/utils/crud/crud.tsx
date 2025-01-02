@@ -13,6 +13,7 @@ interface CrudProps<T> {
     }[];
     data: T[];
     title?: React.ReactElement;
+    customModalHeader?: string;
     fetchAll: () => Promise<T[]>;
     create: (data: T) => Promise<void>;
     update: (data: T) => Promise<void>;
@@ -25,6 +26,7 @@ const Crud = <T extends { id: string }>({
     columns,
     data,
     title,
+    customModalHeader,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     fetchAll,
     create,
@@ -77,7 +79,14 @@ const Crud = <T extends { id: string }>({
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                title={selectedItem ? "Editar" : "Crear Nuevo"}
+                title={
+                    selectedItem
+                        ? "Editar"
+                        : customModalHeader
+                        ? customModalHeader
+                        : "Crear nuevo"
+                }
+                className="max-w-4xl"
             >
                 <FormComponent
                     onSubmit={async (data: T) => {
