@@ -1,4 +1,4 @@
-export interface ProductSale {
+export interface ProductoVenta {
     producto_id: string;
     precioUnitario: number;
     detalle?: string;
@@ -12,5 +12,5 @@ export interface Sales {
     total: number;
     cliente_id: string;
     estado_id: string;
-    productos: ProductSale[];
+    productos: ProductoVenta[];
 }

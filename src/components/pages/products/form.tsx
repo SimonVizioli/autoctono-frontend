@@ -9,6 +9,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { fakeProducts } from "@/data/fake-data";
 import { Product } from "@/types/product";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -37,12 +38,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
     useEffect(() => {
         if (tipoProductoId) {
             // Fake data para los tipos de producto
-            const fakeTiposProducto = [
-                { id: "1", nombre: "Arcilla", codigo: "A" },
-                { id: "2", nombre: "Pintura", codigo: "P" },
-                { id: "3", nombre: "Cerámica", codigo: "C" },
-            ];
-            const tipoProducto = fakeTiposProducto.find(
+            const tipoProducto = fakeProducts.find(
                 (tipo) => tipo.id === tipoProductoId
             );
             if (tipoProducto) {

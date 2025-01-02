@@ -1,10 +1,10 @@
 // src/components/pages/sales/sales.tsx
-import React, { useState } from "react";
-import Crud from "@/utils/crud/crud";
-import SalesForm from "./form";
-import { ProductoVenta, Sales } from "@/types/sales";
+import { fakeCustomers, fakeSales, fakeStatuses } from "@/data/fake-data";
+import { Sales } from "@/types/sales";
 import ActionsColumn from "@/utils/actions/action-column";
-import { fakeSales } from "@/data/fake-data";
+import Crud from "@/utils/crud/crud";
+import React, { useState } from "react";
+import SalesForm from "./form";
 
 const SalesPage: React.FC = () => {
     const [sales, setSales] = useState<Sales[]>(fakeSales);
@@ -34,24 +34,35 @@ const SalesPage: React.FC = () => {
             }
             columns={[
                 { key: "detalle", label: "Detalle" },
-                { key: "total", label: "Total" },
+                {
+                    key: "cliente_id",
+                    label: "Cliente",
+                    render: (row: Sales) =>
+                        fakeCustomers.find(
+                            (cliente) => cliente.id === row.cliente_id
+                        )?.nombre || "Cliente desconocido",
+                },
+                {
+                    key: "estado_id",
+                    label: "Estado",
+                    render: (row: Sales) =>
+                        fakeStatuses.find(
+                            (estado) => estado.id === row.estado_id
+                        )?.label || "Estado desconocido",
+                },
                 {
                     key: "productos",
-                    label: "Productos",
+                    label: "Cantidad de Productos",
                     render: (row: Sales) =>
-                        row.productos && row.productos.length > 0
-                            ? row.productos
-                                  .map(
-                                      (p: ProductoVenta) =>
-                                          `Producto ID: ${
-                                              p.producto_id
-                                          } ($${p.precioUnitario.toFixed(2)})`
-                                  )
-                                  .join(", ")
+                        row.productos?.length > 0
+                            ? `${row.productos.length}`
                             : "Sin productos",
                 },
-                { key: "cliente_id", label: "Cliente" },
-                { key: "estado_id", label: "Estado" },
+                {
+                    key: "total",
+                    label: "Total",
+                    render: (row: Sales) => `$ ${row.total.toFixed(2)}`,
+                },
             ]}
             data={sales}
             fetchAll={fetchAll}

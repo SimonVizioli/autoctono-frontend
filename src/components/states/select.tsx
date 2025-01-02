@@ -1,4 +1,5 @@
 // src/components/forms/select-estado.tsx
+import { fakeStatuses } from "@/data/fake-data";
 import FetchSelect from "@/utils/select/fetch-select";
 import React from "react";
 
@@ -8,11 +9,6 @@ type SelectEstadoProps = {
 };
 
 // Fake data para simular estados
-const fakeStatuses = [
-    { id: "1", label: "Pendiente" },
-    { id: "2", label: "En proceso" },
-    { id: "3", label: "Finalizada" },
-];
 
 const SelectEstado: React.FC<SelectEstadoProps> = ({
     onChange,

@@ -22,8 +22,8 @@ export const fakeSales: Sales[] = [
         cliente_id: "1",
         estado_id: "3",
         productos: [
-            { producto_id: "prod1", precioUnitario: 100 },
-            { producto_id: "prod2", precioUnitario: 100 },
+            { producto_id: "1", precioUnitario: 100 },
+            { producto_id: "2", precioUnitario: 100 },
         ],
     },
     {
@@ -33,10 +33,16 @@ export const fakeSales: Sales[] = [
         cliente_id: "2",
         estado_id: "2",
         productos: [
-            { producto_id: "prod3", precioUnitario: 250 },
-            { producto_id: "prod4", precioUnitario: 250.5 },
+            { producto_id: "3", precioUnitario: 250 },
+            { producto_id: "1", precioUnitario: 250.5 },
         ],
     },
+];
+
+export const fakeStatuses = [
+    { id: "1", label: "Pendiente" },
+    { id: "2", label: "En proceso" },
+    { id: "3", label: "Finalizada" },
 ];
 
 export const fakeCustomers = [

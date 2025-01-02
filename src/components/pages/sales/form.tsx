@@ -1,3 +1,4 @@
+// src/components/pages/sales/form.tsx
 import SelectCliente from "@/components/clients/select";
 import SelectEstado from "@/components/states/select";
 import SelectProducto from "@/components/products/select";
@@ -16,12 +17,10 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { Sales } from "@/types/sales";
 import React, { useEffect } from "react";
 
-type SalesFormProps = {
+const SalesForm: React.FC<{
     onSubmit: (data: Sales) => void;
     initialData?: Sales;
-};
-
-const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
+}> = ({ onSubmit, initialData }) => {
     const form = useForm<Sales>({
         defaultValues: initialData || {
             detalle: "",
@@ -51,13 +50,12 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
 
     const handleProductSelection = (
         index: number,
-        selectedProduct: { id: string; precio: number; detalle: string }
+        selectedProduct: { id: string; precio: number }
     ) => {
         update(index, {
             ...fields[index],
             producto_id: selectedProduct.id,
             precioUnitario: selectedProduct.precio,
-            detalle: selectedProduct.detalle,
         });
     };
 
@@ -66,13 +64,7 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
             producto_id: "",
             precioUnitario: 0,
             cantidad: 1,
-            detalle: "",
         });
-    };
-
-    const handleQuantityChange = (index: number, quantity: number) => {
-        if (quantity < 1) quantity = 1; // Evitar cantidades menores a 1
-        update(index, { ...fields[index], cantidad: quantity });
     };
 
     const handleSubmit = (values: Sales) => {
@@ -86,7 +78,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-4"
             >
-                {/* Detalle de la venta */}
                 <FormField
                     name="detalle"
                     control={form.control}
@@ -104,7 +95,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                     )}
                 />
 
-                {/* Cliente */}
                 <FormField
                     name="cliente_id"
                     control={form.control}
@@ -122,7 +112,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                     )}
                 />
 
-                {/* Estado */}
                 <FormField
                     name="estado_id"
                     control={form.control}
@@ -140,7 +129,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                     )}
                 />
 
-                {/* Productos */}
                 <div className="space-y-4">
                     <h3 className="text-lg font-medium">Productos</h3>
                     {fields.map((field, index) => (
@@ -148,7 +136,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                             key={field.id}
                             className="flex items-end space-x-4"
                         >
-                            {/* Select de producto */}
                             <FormField
                                 name={`productos.${index}.producto_id`}
                                 control={form.control}
@@ -170,8 +157,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                                     </FormItem>
                                 )}
                             />
-
-                            {/* Cantidad */}
                             <FormField
                                 name={`productos.${index}.cantidad`}
                                 control={form.control}
@@ -183,15 +168,18 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                                                 type="number"
                                                 placeholder="1"
                                                 {...field}
-                                                onBlur={(e) =>
-                                                    handleQuantityChange(
-                                                        index,
+                                                onChange={(e) => {
+                                                    const newValue =
                                                         parseInt(
                                                             e.target.value,
                                                             10
-                                                        )
-                                                    )
-                                                }
+                                                        ) || 0;
+                                                    field.onChange(newValue); // Notifica el cambio al form
+                                                    update(index, {
+                                                        ...fields[index],
+                                                        cantidad: newValue,
+                                                    }); // Actualiza el campo correspondiente
+                                                }}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -199,7 +187,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                                 )}
                             />
 
-                            {/* Precio Unitario */}
                             <FormField
                                 name={`productos.${index}.precioUnitario`}
                                 control={form.control}
@@ -208,9 +195,10 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                                         <FormLabel>Precio Unitario</FormLabel>
                                         <FormControl>
                                             <Input
-                                                type="number"
-                                                placeholder="0.00"
-                                                {...field}
+                                                type="text"
+                                                value={`$ ${field.value.toFixed(
+                                                    2
+                                                )}`}
                                                 readOnly
                                             />
                                         </FormControl>
@@ -218,8 +206,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                                     </FormItem>
                                 )}
                             />
-
-                            {/* Botón para eliminar producto */}
                             <Button
                                 variant="destructive"
                                 size="icon"
@@ -229,7 +215,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                             </Button>
                         </div>
                     ))}
-
                     <Button
                         variant="secondary"
                         onClick={handleAddProduct}
@@ -239,7 +224,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                     </Button>
                 </div>
 
-                {/* Total */}
                 <FormField
                     name="total"
                     control={form.control}
@@ -248,9 +232,8 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                             <FormLabel>Total</FormLabel>
                             <FormControl>
                                 <Input
-                                    type="number"
-                                    placeholder="0.00"
-                                    {...field}
+                                    type="text"
+                                    value={`$ ${field.value.toFixed(2)}`}
                                     readOnly
                                 />
                             </FormControl>
@@ -259,7 +242,6 @@ const SalesForm: React.FC<SalesFormProps> = ({ onSubmit, initialData }) => {
                     )}
                 />
 
-                {/* Botón para guardar */}
                 <Button type="submit" className="w-full">
                     Guardar
                 </Button>
