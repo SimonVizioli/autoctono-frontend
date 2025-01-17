@@ -33,6 +33,7 @@ const Crud = <T extends { id: string }>({
     update,
     deleteEntry,
     FormComponent,
+    renderActionsColumn,
 }: CrudProps<T>) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<T | undefined>(undefined);
@@ -64,13 +65,16 @@ const Crud = <T extends { id: string }>({
                     {
                         key: "acciones" as keyof T,
                         label: "Acciones",
-                        render: (item: T) => (
-                            <ActionsColumn
-                                item={item}
-                                onEdit={() => openModal(item)}
-                                onDelete={() => handleDelete(item.id)}
-                            />
-                        ),
+                        render: (item: T) =>
+                            renderActionsColumn ? (
+                                renderActionsColumn(item) // ✅ Usa la prop personalizada
+                            ) : (
+                                <ActionsColumn
+                                    item={item}
+                                    onEdit={() => openModal(item)}
+                                    onDelete={() => handleDelete(item.id)}
+                                />
+                            ),
                     },
                 ]}
                 data={data}

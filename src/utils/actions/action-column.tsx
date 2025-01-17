@@ -6,15 +6,18 @@ interface ActionColumnProps<T> {
     item: T;
     onEdit: (item: T) => void;
     onDelete: (id: string) => void;
+    children?: React.ReactNode;
 }
 
 const ActionsColumn = <T extends { id: string }>({
     item,
     onEdit,
     onDelete,
+    children,
 }: ActionColumnProps<T>) => {
     return (
         <div className="flex space-x-2">
+            {children}
             <Button variant={"ghost"} onClick={() => onEdit(item)}>
                 Editar
             </Button>
