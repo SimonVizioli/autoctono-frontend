@@ -1,6 +1,5 @@
 import { fakeInventory } from "@/data/fake-data";
 import { Inventory } from "@/types/inventory";
-import ActionsColumn from "@/utils/actions/action-column";
 import Crud from "@/utils/crud/crud";
 import React, { useState } from "react";
 import InventoryForm from "./form";
@@ -43,13 +42,6 @@ const InventoryPage: React.FC = () => {
             update={update}
             deleteEntry={deleteEntry}
             FormComponent={InventoryForm}
-            renderActionsColumn={(item) => (
-                <ActionsColumn
-                    item={item}
-                    onEdit={(item) => console.log("Editar", item)}
-                    onDelete={(id) => console.log("Eliminar", id)}
-                />
-            )}
         />
     );
 };

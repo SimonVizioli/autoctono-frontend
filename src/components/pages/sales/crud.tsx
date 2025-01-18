@@ -1,12 +1,11 @@
 // src/components/pages/sales/sales.tsx
+import { generateRemitoPDF } from "@/components/sales/generateRemitoPDF";
+import { Button } from "@/components/ui/button";
 import { fakeCustomers, fakeSales, fakeStatuses } from "@/data/fake-data";
 import { Sales } from "@/types/sales";
-import ActionsColumn from "@/utils/actions/action-column";
 import Crud from "@/utils/crud/crud";
 import React, { useState } from "react";
 import SalesForm from "./form";
-import { Button } from "@/components/ui/button";
-import { generateRemitoPDF } from "@/components/sales/generateRemitoPDF";
 
 const SalesPage: React.FC = () => {
     const [sales, setSales] = useState<Sales[]>(fakeSales);
@@ -73,21 +72,14 @@ const SalesPage: React.FC = () => {
             deleteEntry={deleteEntry}
             FormComponent={SalesForm}
             renderActionsColumn={(item) => {
-                console.log("Renderizando acciones para:", item);
                 return (
-                    <ActionsColumn
-                        item={item}
-                        onEdit={(item) => console.log("Editar", item)}
-                        onDelete={(id) => console.log("Eliminar", id)}
+                    <Button
+                        onClick={() => generateRemitoPDF(item)}
+                        className="ml-2 bg-teal-400 dark:text-white text-black"
+                        variant={"default"}
                     >
-                        <Button
-                            onClick={() => generateRemitoPDF(item)}
-                            className="ml-2 bg-teal-400 dark:text-white text-black"
-                            variant={"default"}
-                        >
-                            Generar Remito
-                        </Button>
-                    </ActionsColumn>
+                        Generar Remito
+                    </Button>
                 );
             }}
         />

@@ -1,7 +1,6 @@
 // src/pages/customers/customers.tsx
 import { fakeCustomers } from "@/data/fake-data";
 import { Customer } from "@/types/customer";
-import ActionsColumn from "@/utils/actions/action-column";
 import Crud from "@/utils/crud/crud";
 import React, { useState } from "react";
 import CustomerForm from "./form";
@@ -40,13 +39,6 @@ const Customers: React.FC = () => {
             update={update}
             deleteEntry={deleteEntry}
             FormComponent={CustomerForm}
-            renderActionsColumn={(item) => (
-                <ActionsColumn
-                    item={item}
-                    onEdit={(item) => console.log("Editar", item)}
-                    onDelete={(id) => console.log("Eliminar", id)}
-                />
-            )}
         />
     );
 };

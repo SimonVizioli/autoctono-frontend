@@ -1,4 +1,3 @@
-// src/utils/crud.tsx
 import React, { useState } from "react";
 import CustomTable from "../table/custom-table";
 import ActionsColumn from "../actions/action-column";
@@ -19,7 +18,10 @@ interface CrudProps<T> {
     update: (data: T) => Promise<void>;
     deleteEntry: (id: string) => Promise<void>;
     FormComponent: React.FC<{ onSubmit: (data: T) => void; initialData?: T }>;
-    renderActionsColumn?: (item: T) => React.ReactNode; // Nueva prop para acciones
+    renderActionsColumn?: (item: T) => React.ReactNode;
+    enableSelection?: boolean;
+    selectedItems?: string[];
+    onSelectItem?: (id: string) => void;
 }
 
 const Crud = <T extends { id: string }>({
@@ -34,6 +36,9 @@ const Crud = <T extends { id: string }>({
     deleteEntry,
     FormComponent,
     renderActionsColumn,
+    enableSelection,
+    selectedItems,
+    onSelectItem,
 }: CrudProps<T>) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<T | undefined>(undefined);
@@ -61,20 +66,41 @@ const Crud = <T extends { id: string }>({
 
             <CustomTable
                 columns={[
+                    ...(enableSelection
+                        ? [
+                              {
+                                  key: "seleccionar" as keyof T,
+                                  label: "✔",
+                                  render: (item: T) => (
+                                      <input
+                                          type="checkbox"
+                                          checked={selectedItems?.includes(
+                                              item.id
+                                          )}
+                                          onChange={() =>
+                                              onSelectItem &&
+                                              onSelectItem(item.id)
+                                          }
+                                      />
+                                  ),
+                              },
+                          ]
+                        : []),
                     ...columns,
                     {
                         key: "acciones" as keyof T,
                         label: "Acciones",
-                        render: (item: T) =>
-                            renderActionsColumn ? (
-                                renderActionsColumn(item) // ✅ Usa la prop personalizada
-                            ) : (
-                                <ActionsColumn
-                                    item={item}
-                                    onEdit={() => openModal(item)}
-                                    onDelete={() => handleDelete(item.id)}
-                                />
-                            ),
+                        render: (item: T) => (
+                            <ActionsColumn
+                                item={item}
+                                onEdit={() => openModal(item)}
+                                onDelete={() => handleDelete(item.id)}
+                            >
+                                {renderActionsColumn
+                                    ? renderActionsColumn(item)
+                                    : null}
+                            </ActionsColumn>
+                        ),
                     },
                 ]}
                 data={data}
