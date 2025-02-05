@@ -9,6 +9,8 @@ import instagramIcon from "@/assets/icons/instagram.png";
 import facebookIcon from "@/assets/icons/facebook.png";
 
 export const generateRemitoPDF = (sale: Sales) => {
+    console.log("sale", sale);
+
     const doc = new jsPDF();
 
     // Buscar cliente y estado en los datos falsos
@@ -41,7 +43,7 @@ export const generateRemitoPDF = (sale: Sales) => {
             ["Fecha:", new Date().toLocaleDateString()],
             ["Cliente:", cliente],
             ["Estado:", estado],
-            ["Descripción:", sale.detalle],
+            ["Descripción:", sale.detail],
         ],
     });
 
@@ -55,7 +57,7 @@ export const generateRemitoPDF = (sale: Sales) => {
         head: [["Cantidad", "Producto", "Precio Unitario"]],
         body: sale.productos.map((producto) => [
             producto.cantidad || 1,
-            producto.detalle || "Producto sin descripción",
+            producto.detail || "Producto sin descripción",
             `$${producto.precioUnitario.toFixed(2)}`,
         ]),
         theme: "grid",

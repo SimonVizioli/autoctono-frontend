@@ -1,13 +1,27 @@
 import { fakeInventory } from "@/data/fake-data";
 import { Inventory } from "@/types/inventory";
 import Crud from "@/utils/crud/crud";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InventoryForm from "./form";
+import { StockApi } from "@/service/api";
 
 const InventoryPage: React.FC = () => {
     const [inventory, setInventory] = useState<Inventory[]>(fakeInventory);
 
-    const fetchAll = async () => inventory;
+    useEffect(() => {
+        fetchAll();
+    }, []);
+
+    const fetchAll = async () => {
+        try {
+            const getStock = (await StockApi.get()) as Inventory[];
+            setInventory(getStock);
+            return getStock;
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
+    };
 
     const create = async (data: Inventory) => {
         setInventory([...inventory, { ...data, id: Date.now().toString() }]);
@@ -33,8 +47,12 @@ const InventoryPage: React.FC = () => {
                 </h1>
             }
             columns={[
-                { key: "producto", label: "Producto" },
-                { key: "cantidad", label: "Cantidad (gramos)" },
+                {
+                    key: "producto",
+                    label: "Producto",
+                    render: (item) => item?.product?.name,
+                },
+                { key: "quantity", label: "Cantidad (gramos)" },
             ]}
             data={inventory}
             fetchAll={fetchAll}

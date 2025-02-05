@@ -4,13 +4,27 @@ import { Button } from "@/components/ui/button";
 import { fakeCustomers, fakeSales, fakeStatuses } from "@/data/fake-data";
 import { Sales } from "@/types/sales";
 import Crud from "@/utils/crud/crud";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SalesForm from "./form";
+import { SalesApi } from "@/service/api";
 
 const SalesPage: React.FC = () => {
     const [sales, setSales] = useState<Sales[]>(fakeSales);
 
-    const fetchAll = async () => sales;
+    useEffect(() => {
+        fetchAll();
+    }, []);
+
+    const fetchAll = async () => {
+        try {
+            const getSales = (await SalesApi.dto.get()) as Sales[];
+            setSales(getSales);
+            return getSales;
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
+    };
 
     const create = async (data: Sales) => {
         setSales([...sales, { ...data, id: Date.now().toString() }]);
@@ -34,13 +48,17 @@ const SalesPage: React.FC = () => {
                 <h1 className="text-2xl font-bold mb-4">Gestión de Ventas</h1>
             }
             columns={[
-                { key: "detalle", label: "Detalle" },
+                {
+                    key: "detail",
+                    label: "Detalle",
+                    render: (row: Sales) => row?.sale?.detail,
+                },
                 {
                     key: "cliente_id",
                     label: "Cliente",
                     render: (row: Sales) =>
                         fakeCustomers.find(
-                            (cliente) => cliente.id === row.cliente_id
+                            (cliente) => cliente.id === row?.sale?.customerId
                         )?.nombre || "Cliente desconocido",
                 },
                 {
@@ -48,21 +66,21 @@ const SalesPage: React.FC = () => {
                     label: "Estado",
                     render: (row: Sales) =>
                         fakeStatuses.find(
-                            (estado) => estado.id === row.estado_id
+                            (estado) => estado.id === row?.sale?.statusId
                         )?.label || "Estado desconocido",
                 },
                 {
                     key: "productos",
                     label: "Cantidad de Productos",
                     render: (row: Sales) =>
-                        row.productos?.length > 0
-                            ? `${row.productos.length}`
+                        row.product?.length > 0
+                            ? `${row.product.length}`
                             : "Sin productos",
                 },
                 {
                     key: "total",
                     label: "Total",
-                    render: (row: Sales) => `$ ${row.total.toFixed(2)}`,
+                    render: (row: Sales) => `$ ${row?.sale?.total?.toFixed(2)}`,
                 },
             ]}
             data={sales}

@@ -17,7 +17,7 @@ export const fakeInventory: Inventory[] = [
 export const fakeSales: Sales[] = [
     {
         id: "1",
-        detalle: "Venta de arcilla",
+        detail: "Venta de arcilla",
         total: 200.0,
         cliente_id: "1",
         estado_id: "3",
@@ -28,7 +28,7 @@ export const fakeSales: Sales[] = [
     },
     {
         id: "2",
-        detalle: "Venta de cerámica",
+        detail: "Venta de cerámica",
         total: 500.5,
         cliente_id: "2",
         estado_id: "2",
@@ -67,9 +67,9 @@ export const fakeProducts = [
     {
         id: "1",
         codigo: "A",
-        detalle: "Producto de alta calidad",
-        nombre: "Arcilla Premium",
-        precio: 150.0,
+        detail: "Producto de alta calidad",
+        name: "Arcilla Premium",
+        price: 150.0,
         costos: 100.0,
         cantidad: 10,
         tipoProducto_id: "1",
@@ -77,9 +77,9 @@ export const fakeProducts = [
     {
         id: "2",
         codigo: "P",
-        detalle: "Pintura acrílica para cerámica",
-        nombre: "Pintura Acrílica",
-        precio: 250.0,
+        detail: "Pintura acrílica para cerámica",
+        name: "Pintura Acrílica",
+        price: 250.0,
         costos: 200.0,
         cantidad: 3,
         tipoProducto_id: "2",
@@ -87,9 +87,9 @@ export const fakeProducts = [
     {
         id: "3",
         codigo: "C",
-        detalle: "Juego de cerámica decorativa",
-        nombre: "Cerámica Decorativa",
-        precio: 500.0,
+        detail: "Juego de cerámica decorativa",
+        name: "Cerámica Decorativa",
+        price: 500.0,
         costos: 180.0,
         cantidad: 5,
         tipoProducto_id: "3",

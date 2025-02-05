@@ -1,17 +1,32 @@
 import { fakeProducts } from "@/data/fake-data";
 import { Product } from "@/types/product";
 import Crud from "@/utils/crud/crud";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductForm from "./form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ProductsApi } from "@/service/api";
 
 const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<Product[]>(fakeProducts);
     const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
     const [increasePercentage, setIncreasePercentage] = useState<number>(0);
 
-    const fetchAll = async () => products;
+    useEffect(() => {
+        fetchAll();
+    }, []);
+
+    const fetchAll = async () => {
+        try {
+            const getProducts = (await ProductsApi.get()) as Product[];
+            setProducts(getProducts);
+            console.log("getProducts", getProducts);
+            return getProducts;
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
+    };
 
     const create = async (data: Product) => {
         setProducts([...products, { ...data, id: Date.now().toString() }]);
@@ -103,8 +118,8 @@ const ProductsPage: React.FC = () => {
                             />
                         ),
                     },
-                    { key: "nombre", label: "Nombre" },
-                    { key: "detalle", label: "Detalle" },
+                    { key: "name", label: "Nombre" },
+                    { key: "detail", label: "Detalle" },
                     { key: "codigo", label: "Código" },
                     {
                         key: "tipoProducto_id",
@@ -114,20 +129,20 @@ const ProductsPage: React.FC = () => {
                                 (tipo) => tipo.id === item.tipoProducto_id
                             );
                             return tipoProducto
-                                ? tipoProducto.nombre
+                                ? tipoProducto.name
                                 : "Desconocido";
                         },
                     },
                     { key: "cantidad", label: "Cantidad" },
                     {
-                        key: "precio",
+                        key: "price",
                         label: "Precio",
-                        render: (item) => `$ ${item.precio.toFixed(2)}`,
+                        render: (item) => `$ ${item.price}`,
                     },
                     {
                         key: "costos",
                         label: "Costos",
-                        render: (item) => `$ ${item.costos.toFixed(2)}`,
+                        render: (item) => `$ ${item.costos}`,
                     },
                 ]}
                 customModalHeader={"Crear nuevo producto"}

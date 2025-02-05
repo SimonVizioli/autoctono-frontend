@@ -1,17 +1,24 @@
 // src/context/auth-context.tsx
 import React, { createContext, useEffect, useState } from "react";
-import { fakeUser } from "@/data/fake-user";
+// import { fakeUser } from "@/data/fake-user";
+import { LoginApi } from "@/service/api";
 
 interface User {
-    name: string;
-    email: string;
+    firstName: string;
+    lastName: string;
+    username: string;
 }
 
 interface AuthContextType {
     isAuthenticated: boolean;
     user: User | null;
-    login: (email: string, password: string) => boolean;
+    login: (username: string, password: string) => Promise<boolean>;
     logout: () => void;
+}
+
+interface ResponseType {
+    token: string;
+    user: User;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -34,18 +41,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     }, []);
 
-    const login = (email: string, password: string): boolean => {
-        if (email === fakeUser.email && password === fakeUser.password) {
-            setIsAuthenticated(true);
-            setUser({ name: fakeUser.name, email: fakeUser.email });
+    const login = async (
+        username: string,
+        password: string
+    ): Promise<boolean> => {
+        try {
+            const response = (await LoginApi.post({
+                username,
+                password,
+            })) as ResponseType;
+
+            localStorage.setItem("token", response.token);
             localStorage.setItem("isAuthenticated", "true");
-            localStorage.setItem(
-                "user",
-                JSON.stringify({ name: fakeUser.name, email: fakeUser.email })
-            );
+            localStorage.setItem("user", JSON.stringify(response.user));
+            setIsAuthenticated(true);
+            setUser(response.user);
             return true;
+        } catch (error: unknown) {
+            console.error("Error en login:", error);
+            return false;
         }
-        return false;
     };
 
     const logout = () => {
