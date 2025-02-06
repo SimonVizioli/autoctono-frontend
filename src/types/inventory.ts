@@ -1,5 +1,5 @@
 export interface Inventory {
     id: string;
-    cantidad: number;
-    producto: string;
+    quantity: number;
+    productId: string;
 }

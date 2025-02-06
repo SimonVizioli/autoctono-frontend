@@ -27,7 +27,13 @@ const SalesPage: React.FC = () => {
     };
 
     const create = async (data: Sales) => {
-        setSales([...sales, { ...data, id: Date.now().toString() }]);
+        try {
+            const createSale = (await SalesApi.post(data)) as Sales;
+            setSales((prevSales) => [...prevSales, createSale]);
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const update = async (updatedItem: Sales) => {
@@ -39,7 +45,13 @@ const SalesPage: React.FC = () => {
     };
 
     const deleteEntry = async (id: string) => {
-        setSales(sales.filter((item) => item.id !== id));
+        try {
+            await SalesApi.delete(id);
+            setSales((prevSales) => prevSales.filter((item) => item.id !== id));
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     return (
@@ -51,36 +63,36 @@ const SalesPage: React.FC = () => {
                 {
                     key: "detail",
                     label: "Detalle",
-                    render: (row: Sales) => row?.sale?.detail,
+                    render: (row: Sales) => row?.detail,
                 },
                 {
                     key: "cliente_id",
                     label: "Cliente",
                     render: (row: Sales) =>
-                        fakeCustomers.find(
-                            (cliente) => cliente.id === row?.sale?.customerId
-                        )?.nombre || "Cliente desconocido",
+                        row?.customer?.id
+                            ? `${row?.customer?.lastName}, ${row?.customer?.firstName}`
+                            : "Cliente desconocido",
                 },
                 {
                     key: "estado_id",
                     label: "Estado",
                     render: (row: Sales) =>
-                        fakeStatuses.find(
-                            (estado) => estado.id === row?.sale?.statusId
-                        )?.label || "Estado desconocido",
+                        row?.status?.id
+                            ? row?.status?.name
+                            : "Estado desconocido",
                 },
                 {
                     key: "productos",
                     label: "Cantidad de Productos",
                     render: (row: Sales) =>
-                        row.product?.length > 0
-                            ? `${row.product.length}`
+                        row?.productSales?.length > 0
+                            ? `${row?.productSales?.length}`
                             : "Sin productos",
                 },
                 {
                     key: "total",
                     label: "Total",
-                    render: (row: Sales) => `$ ${row?.sale?.total?.toFixed(2)}`,
+                    render: (row: Sales) => `$ ${row?.total?.toFixed(2)}`,
                 },
             ]}
             data={sales}

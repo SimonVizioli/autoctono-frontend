@@ -34,4 +34,5 @@ export interface Sale {
     total: number;
     customerId: string;
     statusId: string;
+    productSales: ProductSale[];
 }

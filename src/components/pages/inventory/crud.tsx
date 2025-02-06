@@ -24,19 +24,41 @@ const InventoryPage: React.FC = () => {
     };
 
     const create = async (data: Inventory) => {
-        setInventory([...inventory, { ...data, id: Date.now().toString() }]);
+        try {
+            const saveStock = (await StockApi.post(data)) as Inventory;
+            setInventory((prevInventory) => [...prevInventory, saveStock]);
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const update = async (updatedItem: Inventory) => {
-        setInventory(
-            inventory.map((item) =>
-                item.id === updatedItem.id ? updatedItem : item
-            )
-        );
+        try {
+            const id = updatedItem.id;
+            const data = updatedItem;
+            const updateStock = (await StockApi.put(id, data)) as Inventory;
+            setInventory((prevInventory) =>
+                prevInventory.map((item) =>
+                    item.id === updateStock.id ? updateStock : item
+                )
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const deleteEntry = async (id: string) => {
-        setInventory(inventory.filter((item) => item.id !== id));
+        try {
+            await StockApi.delete(id);
+            setInventory((prevInventory) =>
+                prevInventory.filter((item) => item.id !== id)
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     return (

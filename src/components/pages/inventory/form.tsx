@@ -1,3 +1,4 @@
+import SelectProducto from "@/components/products/select";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -23,12 +24,13 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
 }) => {
     const form = useForm<Inventory>({
         defaultValues: initialData || {
-            cantidad: 0,
-            producto: "",
+            quantity: 0,
+            productId: "",
         },
     });
 
     const handleSubmit = (values: Inventory) => {
+        console.log("values", values);
         onSubmit(values);
         form.reset();
     };
@@ -40,23 +42,25 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                 className="space-y-4"
             >
                 <FormField
-                    name="producto"
+                    name="productId"
                     control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Producto</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="Nombre del producto"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
+                    render={({ field }) => {
+                        return (
+                            <FormItem>
+                                <FormLabel>Producto</FormLabel>
+                                <FormControl>
+                                    <SelectProducto
+                                        onChange={field.onChange}
+                                        initialValue={field.value}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
                 />
                 <FormField
-                    name="cantidad"
+                    name="quantity"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>

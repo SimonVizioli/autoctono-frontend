@@ -1,7 +1,7 @@
-// src/components/pages/sales/form.tsx
-import SelectCliente from "@/components/clients/select";
-import SelectEstado from "@/components/states/select";
-import SelectProducto from "@/components/products/select";
+import React, { useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+
+// Componentes UI
 import {
     Form,
     FormControl,
@@ -13,61 +13,91 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { Sales } from "@/types/sales";
-import React, { useEffect } from "react";
 
+// Tus selects
+import SelectCliente from "@/components/clients/select";
+import SelectEstado from "@/components/states/select";
+import SelectProducto from "@/components/products/select";
+
+// Tipos que representan la data final que quieres enviar
+interface ProductFormData {
+    productId: string;
+    unitPrice: number;
+    quantity: number;
+}
+
+interface SaleFormData {
+    detail: string;
+    total: number;
+    customerId: string;
+    statusId: string;
+    products: ProductFormData[];
+}
+
+// Props del componente
 const SalesForm: React.FC<{
-    onSubmit: (data: Sales) => void;
-    initialData?: Sales;
+    onSubmit: (data: SaleFormData) => void;
+    initialData?: SaleFormData;
 }> = ({ onSubmit, initialData }) => {
-    const form = useForm<Sales>({
+    // useForm con campos renombrados al formato final
+    const form = useForm<SaleFormData>({
         defaultValues: initialData || {
-            detalle: "",
+            detail: "",
             total: 0,
-            cliente_id: "",
-            estado_id: "",
-            productos: [],
+            customerId: "",
+            statusId: "",
+            products: [],
         },
     });
 
+    // useFieldArray para la lista de productos
     const { fields, append, update, remove } = useFieldArray({
         control: form.control,
-        name: "productos",
+        name: "products",
     });
 
-    const totalWatcher = form.watch("productos");
+    // Escuchamos los productos para recalcular el total automáticamente
+    const productsWatcher = form.watch("products");
 
-    // Calcular el total dinámicamente basado en los productos
     useEffect(() => {
-        const total = totalWatcher.reduce(
-            (acc, producto) =>
-                acc + (producto.precioUnitario || 0) * (producto.cantidad || 1),
+        const newTotal = productsWatcher.reduce(
+            (acc, item) => acc + (item.unitPrice || 0) * (item.quantity || 1),
             0
         );
-        form.setValue("total", total);
-    }, [totalWatcher, form]);
+        form.setValue("total", newTotal);
+    }, [productsWatcher, form]);
 
+    /**
+     * Cuando seleccionas un producto en <SelectProducto>:
+     *  - Asignamos su `productId`
+     *  - Asignamos su `unitPrice` (basado en la lógica que necesites)
+     */
     const handleProductSelection = (
         index: number,
-        selectedProduct: { id: string; precio: number }
+        selectedProduct: { id: string; unitPrice: number }
     ) => {
         update(index, {
             ...fields[index],
-            producto_id: selectedProduct.id,
-            precioUnitario: selectedProduct.precio,
+            productId: selectedProduct.id,
+            unitPrice: selectedProduct.unitPrice,
         });
     };
 
+    /**
+     * Agregar un nuevo producto (fila) al array
+     */
     const handleAddProduct = () => {
         append({
-            producto_id: "",
-            precioUnitario: 0,
-            cantidad: 1,
+            productId: "",
+            unitPrice: 0,
+            quantity: 1,
         });
     };
 
-    const handleSubmit = (values: Sales) => {
+    /**
+     * Al enviar el formulario, simplemente despachamos la data
+     */
+    const handleSubmit = (values: SaleFormData) => {
         onSubmit(values);
         form.reset();
     };
@@ -78,8 +108,9 @@ const SalesForm: React.FC<{
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-4"
             >
+                {/* Campo detail */}
                 <FormField
-                    name="detalle"
+                    name="detail"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
@@ -95,8 +126,9 @@ const SalesForm: React.FC<{
                     )}
                 />
 
+                {/* Campo customerId */}
                 <FormField
-                    name="cliente_id"
+                    name="customerId"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
@@ -112,8 +144,9 @@ const SalesForm: React.FC<{
                     )}
                 />
 
+                {/* Campo statusId */}
                 <FormField
-                    name="estado_id"
+                    name="statusId"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
@@ -129,15 +162,18 @@ const SalesForm: React.FC<{
                     )}
                 />
 
+                {/* Lista de productos */}
                 <div className="space-y-4">
                     <h3 className="text-lg font-medium">Productos</h3>
-                    {fields.map((field, index) => (
+
+                    {fields.map((fieldItem, index) => (
                         <div
-                            key={field.id}
+                            key={fieldItem.id}
                             className="flex items-end space-x-4"
                         >
+                            {/* productId */}
                             <FormField
-                                name={`productos.${index}.producto_id`}
+                                name={`products.${index}.productId`}
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
@@ -157,8 +193,10 @@ const SalesForm: React.FC<{
                                     </FormItem>
                                 )}
                             />
+
+                            {/* quantity */}
                             <FormField
-                                name={`productos.${index}.cantidad`}
+                                name={`products.${index}.quantity`}
                                 control={form.control}
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
@@ -169,16 +207,16 @@ const SalesForm: React.FC<{
                                                 placeholder="1"
                                                 {...field}
                                                 onChange={(e) => {
-                                                    const newValue =
+                                                    const newVal =
                                                         parseInt(
                                                             e.target.value,
                                                             10
-                                                        ) || 0;
-                                                    field.onChange(newValue); // Notifica el cambio al form
+                                                        ) || 1;
+                                                    field.onChange(newVal);
                                                     update(index, {
                                                         ...fields[index],
-                                                        cantidad: newValue,
-                                                    }); // Actualiza el campo correspondiente
+                                                        quantity: newVal,
+                                                    });
                                                 }}
                                             />
                                         </FormControl>
@@ -187,25 +225,30 @@ const SalesForm: React.FC<{
                                 )}
                             />
 
+                            {/* unitPrice */}
                             <FormField
-                                name={`productos.${index}.precioUnitario`}
+                                name={`products.${index}.unitPrice`}
                                 control={form.control}
-                                render={({ field }) => (
-                                    <FormItem className="flex-1">
-                                        <FormLabel>Precio Unitario</FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                type="text"
-                                                value={`$ ${field.value.toFixed(
-                                                    2
-                                                )}`}
-                                                readOnly
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                render={({ field }) => {
+                                    console.log("field", field);
+                                    return (
+                                        <FormItem className="flex-1">
+                                            <FormLabel>
+                                                Precio Unitario
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="text"
+                                                    value={`$ ${field.value}`}
+                                                    readOnly
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    );
+                                }}
                             />
+
                             <Button
                                 variant="destructive"
                                 size="icon"
@@ -215,6 +258,7 @@ const SalesForm: React.FC<{
                             </Button>
                         </div>
                     ))}
+
                     <Button
                         variant="secondary"
                         onClick={handleAddProduct}
@@ -224,6 +268,7 @@ const SalesForm: React.FC<{
                     </Button>
                 </div>
 
+                {/* total */}
                 <FormField
                     name="total"
                     control={form.control}
