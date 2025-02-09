@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 
 // Componentes UI
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -11,36 +12,21 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 
 // Tus selects
-import SelectCliente from "@/components/clients/select";
-import SelectEstado from "@/components/states/select";
+import SelectCliente from "@/components/customers/select";
 import SelectProducto from "@/components/products/select";
-
-// Tipos que representan la data final que quieres enviar
-interface ProductFormData {
-    productId: string;
-    unitPrice: number;
-    quantity: number;
-}
-
-interface SaleFormData {
-    detail: string;
-    total: number;
-    customerId: string;
-    statusId: string;
-    products: ProductFormData[];
-}
+import SelectEstado from "@/components/states/select";
+import { Sales } from "@/types/sales";
 
 // Props del componente
 const SalesForm: React.FC<{
-    onSubmit: (data: SaleFormData) => void;
-    initialData?: SaleFormData;
+    onSubmit: (data: Sales) => void;
+    initialData?: Sales;
 }> = ({ onSubmit, initialData }) => {
     // useForm con campos renombrados al formato final
-    const form = useForm<SaleFormData>({
+    const form = useForm<Sales>({
         defaultValues: initialData || {
             detail: "",
             total: 0,
@@ -54,6 +40,7 @@ const SalesForm: React.FC<{
     const { fields, append, update, remove } = useFieldArray({
         control: form.control,
         name: "products",
+        keyName: "__fieldId",
     });
 
     // Escuchamos los productos para recalcular el total automáticamente
@@ -70,34 +57,37 @@ const SalesForm: React.FC<{
     /**
      * Cuando seleccionas un producto en <SelectProducto>:
      *  - Asignamos su `productId`
-     *  - Asignamos su `unitPrice` (basado en la lógica que necesites)
+     *  - Asignamos su `unitprice` (basado en la lógica que necesites)
      */
+    // Mira cómo productId es un string, unitPrice es un number
     const handleProductSelection = (
         index: number,
-        selectedProduct: { id: string; unitPrice: number }
+        selectedProduct: { id: string; price: number }
     ) => {
         update(index, {
             ...fields[index],
+            // Solo guardamos el ID en productId
             productId: selectedProduct.id,
-            unitPrice: selectedProduct.unitPrice,
+            // Guardamos el precio en 'unitPrice'
+            unitPrice: selectedProduct.price,
         });
     };
 
-    /**
-     * Agregar un nuevo producto (fila) al array
-     */
+    // Al agregar un item:
     const handleAddProduct = () => {
         append({
-            productId: "",
+            productId: "", // no un objeto
             unitPrice: 0,
             quantity: 1,
         });
     };
 
+    // Reemplaza 'price' por 'unitPrice' donde corresponda
+
     /**
      * Al enviar el formulario, simplemente despachamos la data
      */
-    const handleSubmit = (values: SaleFormData) => {
+    const handleSubmit = (values: Sales) => {
         onSubmit(values);
         form.reset();
     };
@@ -168,7 +158,7 @@ const SalesForm: React.FC<{
 
                     {fields.map((fieldItem, index) => (
                         <div
-                            key={fieldItem.id}
+                            key={fieldItem.__fieldId}
                             className="flex items-end space-x-4"
                         >
                             {/* productId */}
@@ -229,24 +219,21 @@ const SalesForm: React.FC<{
                             <FormField
                                 name={`products.${index}.unitPrice`}
                                 control={form.control}
-                                render={({ field }) => {
-                                    console.log("field", field);
-                                    return (
-                                        <FormItem className="flex-1">
-                                            <FormLabel>
-                                                Precio Unitario
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="text"
-                                                    value={`$ ${field.value}`}
-                                                    readOnly
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    );
-                                }}
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Precio Unitario</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="text"
+                                                value={`$ ${field.value?.toFixed(
+                                                    2
+                                                )}`}
+                                                readOnly
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
                             />
 
                             <Button

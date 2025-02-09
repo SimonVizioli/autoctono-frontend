@@ -1,12 +1,11 @@
-import { fakeInventory } from "@/data/fake-data";
+import { StockApi } from "@/service/api";
 import { Inventory } from "@/types/inventory";
 import Crud from "@/utils/crud/crud";
 import React, { useEffect, useState } from "react";
 import InventoryForm from "./form";
-import { StockApi } from "@/service/api";
 
 const InventoryPage: React.FC = () => {
-    const [inventory, setInventory] = useState<Inventory[]>(fakeInventory);
+    const [inventory, setInventory] = useState<Inventory[]>([]);
 
     useEffect(() => {
         fetchAll();
@@ -70,7 +69,7 @@ const InventoryPage: React.FC = () => {
             }
             columns={[
                 {
-                    key: "producto",
+                    key: "product",
                     label: "Producto",
                     render: (item) => item?.product?.name,
                 },

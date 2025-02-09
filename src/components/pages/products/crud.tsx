@@ -1,14 +1,13 @@
-import { fakeProducts } from "@/data/fake-data";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ProductsApi } from "@/service/api";
 import { Product } from "@/types/product";
 import Crud from "@/utils/crud/crud";
 import React, { useEffect, useState } from "react";
 import ProductForm from "./form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ProductsApi } from "@/service/api";
 
 const ProductsPage: React.FC = () => {
-    const [products, setProducts] = useState<Product[]>(fakeProducts);
+    const [products, setProducts] = useState<Product[]>([]);
     const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
     const [increasePercentage, setIncreasePercentage] = useState<number>(0);
 
@@ -20,7 +19,6 @@ const ProductsPage: React.FC = () => {
         try {
             const getProducts = (await ProductsApi.get()) as Product[];
             setProducts(getProducts);
-            console.log("getProducts", getProducts);
             return getProducts;
         } catch (error: unknown) {
             console.error("Error en fetchAll:");
@@ -29,7 +27,16 @@ const ProductsPage: React.FC = () => {
     };
 
     const create = async (data: Product) => {
-        setProducts([...products, { ...data, id: Date.now().toString() }]);
+        try {
+            const createProduct = await ProductsApi.post(data);
+            setProducts((prevProducts) => [
+                ...prevProducts,
+                createProduct as Product,
+            ]);
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const update = async (updatedItem: Product) => {
@@ -41,7 +48,15 @@ const ProductsPage: React.FC = () => {
     };
 
     const deleteEntry = async (id: string) => {
-        setProducts(products.filter((item) => item.id !== id));
+        try {
+            await ProductsApi.delete(id);
+            setProducts((prevProducts) =>
+                prevProducts.filter((item) => item.id !== id)
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     // ✅ Manejar selección de productos
@@ -64,7 +79,7 @@ const ProductsPage: React.FC = () => {
                           ...product,
                           costos: parseFloat(
                               (
-                                  product.costos *
+                                  product.costs *
                                   (1 + increasePercentage / 100)
                               ).toFixed(2)
                           ),
@@ -120,30 +135,30 @@ const ProductsPage: React.FC = () => {
                     },
                     { key: "name", label: "Nombre" },
                     { key: "detail", label: "Detalle" },
-                    { key: "codigo", label: "Código" },
                     {
-                        key: "tipoProducto_id",
+                        key: "productTypeId",
                         label: "Tipo de Producto",
                         render: (item) => {
-                            const tipoProducto = fakeProducts.find(
-                                (tipo) => tipo.id === item.tipoProducto_id
-                            );
-                            return tipoProducto
-                                ? tipoProducto.name
-                                : "Desconocido";
+                            return <div>{item.productType.name}</div>;
                         },
                     },
-                    { key: "cantidad", label: "Cantidad" },
+                    {
+                        key: "code",
+                        label: "Código",
+                        render: (item) => {
+                            return <div>{item.productType.code}</div>;
+                        },
+                    },
                     {
                         key: "price",
                         label: "Precio",
                         render: (item) => `$ ${item.price}`,
                     },
-                    {
-                        key: "costos",
-                        label: "Costos",
-                        render: (item) => `$ ${item.costos}`,
-                    },
+                    // {
+                    //     key: "costs",
+                    //     label: "Costos",
+                    //     render: (item) => `$ ${item.costs}`,
+                    // },
                 ]}
                 customModalHeader={"Crear nuevo producto"}
                 data={products}

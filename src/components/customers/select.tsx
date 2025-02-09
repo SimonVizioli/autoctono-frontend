@@ -1,31 +1,33 @@
 // src/components/forms/select-cliente.tsx
-import { SaleStatusApi } from "@/service/api";
-import { Status } from "@/types/status";
+import { CustomersApi } from "@/service/api";
+import { Customer } from "@/types/customer";
 import FetchSelect from "@/utils/select/fetch-select";
 import React, { useEffect, useState } from "react";
 
-type SelectStatusProps = {
+type SelectClienteProps = {
     onChange: (value: string) => void;
     initialValue?: string;
 };
 
-const SelectCliente: React.FC<SelectStatusProps> = ({
+const SelectCliente: React.FC<SelectClienteProps> = ({
     onChange,
     initialValue,
 }) => {
-    const [status, setStatus] = useState<Status[]>([]);
+    const [customer, setCustomer] = useState<Customer[]>([]);
     const [selectedId, setSelectedId] = useState<string | undefined>(
         initialValue
     );
 
-    const handleSelect = (statusId: string) => {
-        setSelectedId(statusId); // Actualizas tu estado local
+    const handleSelect = (customerId: string) => {
+        setSelectedId(customerId); // Actualizas tu estado local
 
-        const selectedStatus = status?.find((status) => status.id == statusId);
+        const selectedCustomer = customer?.find(
+            (customer) => customer.id == customerId
+        );
 
-        if (selectedStatus) {
-            selectedStatus.id = statusId.toString();
-            const id = selectedStatus.id;
+        if (selectedCustomer) {
+            selectedCustomer.id = customerId.toString();
+            const id = selectedCustomer.id;
             onChange(id); // Notificas al padre el objeto seleccionado
         }
     };
@@ -36,8 +38,8 @@ const SelectCliente: React.FC<SelectStatusProps> = ({
 
     const fetchAll = async () => {
         try {
-            const getStatus = (await SaleStatusApi.get()) as Status[];
-            setStatus(getStatus);
+            const getCustomers = (await CustomersApi.get()) as Customer[];
+            setCustomer(getCustomers);
         } catch (error: unknown) {
             console.error("Error en fetchAll:");
             throw error;
@@ -45,12 +47,12 @@ const SelectCliente: React.FC<SelectStatusProps> = ({
     };
     return (
         <FetchSelect
-            data={status}
+            data={customer}
             onChange={handleSelect}
             value={selectedId}
-            placeholder="Selecciona un estado de venta "
+            placeholder="Selecciona un cliente"
             getKey={(item) => item.id.toString()}
-            getLabel={(item) => item.name}
+            getLabel={(item) => item.email}
         />
     );
 };

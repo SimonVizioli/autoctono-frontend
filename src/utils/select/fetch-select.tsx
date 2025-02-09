@@ -1,4 +1,3 @@
-// src/components/ui/fetch-select.tsx
 import {
     Select,
     SelectContent,
@@ -6,80 +5,44 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import React, { useEffect, useState } from "react";
 
-type FetchSelectProps = {
-    url?: string; // Endpoint para fetchear los datos (opcional si usamos fakeData)
-    fakeData?: { id: string; label: string }[]; // Datos simulados
-    onChange: (value: string) => void; // Callback cuando se selecciona un ítem
-    initialValue?: string; // Valor inicial a preseleccionar
-    placeholder: string; // Placeholder para el select
+type FetchSelectProps<T> = {
+    data: T[];
+    value: string | undefined;
+    onChange: (value: string) => void;
+    placeholder: string;
+    // Funciones para obtener el "id" (o key) y el "name" (o label)
+    getKey: (item: T) => string;
+    getLabel: (item: T) => string;
 };
 
-type Option = {
-    id: string;
-    label: string;
-};
-
-const FetchSelect: React.FC<FetchSelectProps> = ({
-    url,
-    fakeData,
+const FetchSelect = <T,>({
+    data,
+    value,
     onChange,
-    initialValue,
     placeholder,
-}) => {
-    const [options, setOptions] = useState<Option[]>([]);
-    const [selectedValue, setSelectedValue] = useState(initialValue || "");
-
-    useEffect(() => {
-        if (fakeData) {
-            // Si fakeData está presente, usarlo como opciones
-            setOptions(fakeData);
-        } else if (url) {
-            // Fetch de los datos desde el endpoint
-            const fetchData = async () => {
-                try {
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    setOptions(
-                        //eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        data.map((item: any) => ({
-                            id: item.id,
-                            label: item.name || item.razonSocial || item.nombre, // Cambia según la estructura de tu backend
-                        }))
-                    );
-                } catch (error) {
-                    console.error("Error al obtener datos:", error);
-                }
-            };
-
-            fetchData();
-        }
-    }, [url, fakeData]);
-
-    useEffect(() => {
-        // Si hay un valor inicial, preseleccionarlo
-        if (initialValue) {
-            setSelectedValue(initialValue);
-        }
-    }, [initialValue]);
-
-    const handleSelectChange = (value: string) => {
-        setSelectedValue(value);
-        onChange(value); // Callback para notificar el valor seleccionado
+    getKey,
+    getLabel,
+}: FetchSelectProps<T>) => {
+    const handleSelectChange = (newValue: string) => {
+        onChange(newValue);
     };
 
     return (
-        <Select onValueChange={handleSelectChange} value={selectedValue}>
+        <Select onValueChange={handleSelectChange} value={value}>
             <SelectTrigger>
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
-                {options.map((option) => (
-                    <SelectItem key={option.id} value={option.id}>
-                        {option.label}
-                    </SelectItem>
-                ))}
+                {data.map((item) => {
+                    const key = getKey(item);
+                    const label = getLabel(item);
+                    return (
+                        <SelectItem key={key} value={key}>
+                            {label}
+                        </SelectItem>
+                    );
+                })}
             </SelectContent>
         </Select>
     );

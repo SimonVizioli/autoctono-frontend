@@ -1,13 +1,12 @@
 // src/pages/customers/customers.tsx
-import { fakeCustomers } from "@/data/fake-data";
+import { CustomersApi } from "@/service/api";
 import { Customer } from "@/types/customer";
 import Crud from "@/utils/crud/crud";
 import React, { useEffect, useState } from "react";
 import CustomerForm from "./form";
-import { CustomersApi } from "@/service/api";
 
 const Customers: React.FC = () => {
-    const [customers, setCustomers] = useState<Customer[]>(fakeCustomers);
+    const [customers, setCustomers] = useState<Customer[]>([]);
 
     useEffect(() => {
         fetchAll();
@@ -25,7 +24,16 @@ const Customers: React.FC = () => {
     };
 
     const create = async (data: Customer) => {
-        setCustomers([...customers, { ...data, id: Date.now().toString() }]);
+        try {
+            const createCustomer = await CustomersApi.post(data);
+            setCustomers((prevCustomers) => [
+                ...prevCustomers,
+                createCustomer as Customer,
+            ]);
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const update = async (data: Customer) => {
@@ -36,9 +44,8 @@ const Customers: React.FC = () => {
 
     const deleteEntry = async (id: string) => {
         try {
-            const deleteCustomer = await CustomersApi.delete(id);
+            await CustomersApi.delete(id);
             setCustomers(customers.filter((item) => item.id !== id));
-            return deleteCustomer;
         } catch (error: unknown) {
             console.error("Error en fetchAll:");
             throw error;

@@ -1,3 +1,5 @@
+import { ProductType } from "./productType";
+
 export interface Product1 {
     id: string;
     codigo: string;
@@ -14,5 +16,8 @@ export interface Product {
     detail: string;
     name: string;
     price: number;
+    code: string;
+    costs: number;
     productTypeId: string;
+    productType: ProductType;
 }

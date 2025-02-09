@@ -26,11 +26,12 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         defaultValues: initialData || {
             quantity: 0,
             productId: "",
+            product: {},
         },
     });
 
     const handleSubmit = (values: Inventory) => {
-        console.log("values", values);
+        values.productId = values.product.id;
         onSubmit(values);
         form.reset();
     };
@@ -42,7 +43,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                 className="space-y-4"
             >
                 <FormField
-                    name="productId"
+                    name="product"
                     control={form.control}
                     render={({ field }) => {
                         return (

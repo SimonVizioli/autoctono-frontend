@@ -1,18 +1,18 @@
 import { ProductsApi } from "@/service/api";
 import { Product } from "@/types/product";
-import FetchSelect from "@/utils/select/fetch-select copy";
+import FetchSelect from "@/utils/select/fetch-select";
 import React, { useEffect, useState } from "react";
 
 type SelectProductoProps = {
-    onChange: (value: { id: string; unitPrice: number }) => void;
-    initialValue?: string;
+    onChange: (value: { id: string; price: number }) => void;
+    initialValue?: string; // Solo el ID
 };
 
 const SelectProducto: React.FC<SelectProductoProps> = ({
     onChange,
     initialValue,
 }) => {
-    const [products, setProducts] = useState<Product[]>();
+    const [products, setProducts] = useState<Product[]>([]);
     const [selectedId, setSelectedId] = useState<string | undefined>(
         initialValue
     );
@@ -23,18 +23,12 @@ const SelectProducto: React.FC<SelectProductoProps> = ({
         const selectedProduct = products?.find(
             (product) => product.id == productId
         );
-        console.log(
-            "Encontro productId",
-            productId,
-            "selected",
-            selectedProduct
-        );
+
         if (selectedProduct) {
-            console.log("entro al if", selectedProduct);
             selectedProduct.id = productId.toString();
             onChange({
                 id: productId.toString(),
-                unitPrice: selectedProduct.price,
+                price: selectedProduct.price,
             }); // Notificas al padre el objeto seleccionado
         }
     };
@@ -59,6 +53,8 @@ const SelectProducto: React.FC<SelectProductoProps> = ({
             onChange={handleSelect}
             value={selectedId}
             placeholder="Selecciona un producto"
+            getKey={(product) => String(product.id)}
+            getLabel={(product) => product.name}
         />
     );
 };

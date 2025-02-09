@@ -24,9 +24,9 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
 }) => {
     const form = useForm<Customer>({
         defaultValues: initialData || {
-            razonSocial: "",
-            nombre: "",
-            apellido: "",
+            companyName: "",
+            firstName: "",
+            lastName: "",
             email: "",
         },
     });
@@ -50,7 +50,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
             >
                 <FormField
                     control={form.control}
-                    name="razonSocial"
+                    name="companyName"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Razón Social</FormLabel>
@@ -63,7 +63,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 />
                 <FormField
                     control={form.control}
-                    name="nombre"
+                    name="firstName"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Nombre</FormLabel>
@@ -76,7 +76,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 />
                 <FormField
                     control={form.control}
-                    name="apellido"
+                    name="lastName"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Apellido</FormLabel>

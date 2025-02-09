@@ -1,15 +1,14 @@
 // src/components/pages/sales/sales.tsx
 import { generateRemitoPDF } from "@/components/sales/generateRemitoPDF";
 import { Button } from "@/components/ui/button";
-import { fakeCustomers, fakeSales, fakeStatuses } from "@/data/fake-data";
+import { SalesApi } from "@/service/api";
 import { Sales } from "@/types/sales";
 import Crud from "@/utils/crud/crud";
 import React, { useEffect, useState } from "react";
 import SalesForm from "./form";
-import { SalesApi } from "@/service/api";
 
 const SalesPage: React.FC = () => {
-    const [sales, setSales] = useState<Sales[]>(fakeSales);
+    const [sales, setSales] = useState<Sales[]>([]);
 
     useEffect(() => {
         fetchAll();
@@ -66,7 +65,7 @@ const SalesPage: React.FC = () => {
                     render: (row: Sales) => row?.detail,
                 },
                 {
-                    key: "cliente_id",
+                    key: "customerId",
                     label: "Cliente",
                     render: (row: Sales) =>
                         row?.customer?.id
@@ -74,7 +73,7 @@ const SalesPage: React.FC = () => {
                             : "Cliente desconocido",
                 },
                 {
-                    key: "estado_id",
+                    key: "statusId",
                     label: "Estado",
                     render: (row: Sales) =>
                         row?.status?.id
@@ -82,7 +81,7 @@ const SalesPage: React.FC = () => {
                             : "Estado desconocido",
                 },
                 {
-                    key: "productos",
+                    key: "products",
                     label: "Cantidad de Productos",
                     render: (row: Sales) =>
                         row?.productSales?.length > 0
