@@ -8,7 +8,7 @@ export interface ProductSale {
     sale: Sales;
     product: Product;
     quantity: number;
-    unitprice: number;
+    unitPrice: number;
     createdAt: string;
     updatedAt: string;
 }

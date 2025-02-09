@@ -154,11 +154,11 @@ const ProductsPage: React.FC = () => {
                         label: "Precio",
                         render: (item) => `$ ${item.price}`,
                     },
-                    // {
-                    //     key: "costs",
-                    //     label: "Costos",
-                    //     render: (item) => `$ ${item.costs}`,
-                    // },
+                    {
+                        key: "cost",
+                        label: "Costos",
+                        render: (item) => `$ ${item.cost}`,
+                    },
                 ]}
                 customModalHeader={"Crear nuevo producto"}
                 data={products}

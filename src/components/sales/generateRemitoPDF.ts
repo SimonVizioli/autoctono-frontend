@@ -1,25 +1,20 @@
+import { Sales } from "@/types/sales";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { Sales } from "@/types/sales";
-import { fakeCustomers, fakeStatuses } from "@/data/fake-data";
 
 // Importar imágenes en Base64
-import phoneIcon from "@/assets/icons/phone.png";
-import instagramIcon from "@/assets/icons/instagram.png";
 import facebookIcon from "@/assets/icons/facebook.png";
+import instagramIcon from "@/assets/icons/instagram.png";
+import phoneIcon from "@/assets/icons/phone.png";
 
 export const generateRemitoPDF = (sale: Sales) => {
-    console.log("sale", sale);
-
     const doc = new jsPDF();
 
     // Buscar cliente y estado en los datos falsos
-    const cliente =
-        fakeCustomers.find((c) => c.id === sale.cliente_id)?.nombre ||
-        "Cliente desconocido";
-    const estado =
-        fakeStatuses.find((s) => s.id === sale.estado_id)?.label ||
-        "Estado desconocido";
+    const cliente = sale.customer.id
+        ? `${sale.customer.lastName}, ${sale.customer.firstName}`
+        : "Cliente desconocido";
+    const estado = sale.status.id ? sale.status.name : "Estado desconocido";
 
     // Obtener altura total de la página
     const pageHeight = doc.internal.pageSize.height;
@@ -55,10 +50,10 @@ export const generateRemitoPDF = (sale: Sales) => {
     autoTable(doc, {
         startY: dataFinalY + 10,
         head: [["Cantidad", "Producto", "Precio Unitario"]],
-        body: sale.productos.map((producto) => [
-            producto.cantidad || 1,
-            producto.detail || "Producto sin descripción",
-            `$${producto.precioUnitario.toFixed(2)}`,
+        body: sale.productSales.map((producto) => [
+            producto.quantity || 1,
+            producto.product.detail || "Producto sin descripción",
+            `$${producto.unitPrice.toFixed(2)}`,
         ]),
         theme: "grid",
         styles: { fontSize: 10, cellPadding: 3 },

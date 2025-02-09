@@ -2,6 +2,7 @@
 import React, { createContext, useEffect, useState } from "react";
 // import { fakeUser } from "@/data/fake-user";
 import { LoginApi } from "@/service/api";
+import { isTokenExpired } from "@/utils/auth/jwtDecode";
 
 interface User {
     firstName: string;
@@ -35,9 +36,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     useEffect(() => {
         const storedAuth = localStorage.getItem("isAuthenticated");
         const storedUser = localStorage.getItem("user");
-        if (storedAuth === "true" && storedUser) {
-            setIsAuthenticated(true);
-            setUser(JSON.parse(storedUser));
+        const token = localStorage.getItem("token");
+
+        if (storedAuth === "true" && storedUser && token) {
+            const expired = isTokenExpired(token);
+            if (!expired) {
+                setIsAuthenticated(true);
+                setUser(JSON.parse(storedUser));
+            } else {
+                // Si está vencido, limpiamos
+                localStorage.removeItem("token");
+                localStorage.removeItem("isAuthenticated");
+                localStorage.removeItem("user");
+                // isAuthenticated => false, user => null
+            }
         }
     }, []);
 
@@ -66,6 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const logout = () => {
         setIsAuthenticated(false);
         setUser(null);
+        localStorage.removeItem("token");
         localStorage.removeItem("isAuthenticated");
         localStorage.removeItem("user");
     };

@@ -103,7 +103,9 @@ const SalesPage: React.FC = () => {
             renderActionsColumn={(item) => {
                 return (
                     <Button
-                        onClick={() => generateRemitoPDF(item)}
+                        onClick={() => {
+                            generateRemitoPDF(item);
+                        }}
                         className="ml-2 bg-teal-400 dark:text-white text-black"
                         variant={"default"}
                     >

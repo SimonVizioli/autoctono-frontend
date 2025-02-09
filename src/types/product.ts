@@ -17,7 +17,7 @@ export interface Product {
     name: string;
     price: number;
     code: string;
-    costs: number;
+    cost: number;
     productTypeId: string;
     productType: ProductType;
 }

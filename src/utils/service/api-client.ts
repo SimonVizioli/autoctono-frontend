@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Navigate } from "react-router";
 
 const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
@@ -27,8 +28,11 @@ api.interceptors.response.use(
         if (error.response && error.response.status === 401) {
             console.error("Token inválido o expirado, cerrando sesión...");
             localStorage.removeItem("token");
+            localStorage.removeItem("isAuthenticated");
             localStorage.removeItem("user");
-            window.location.href = "/login";
+
+            Navigate({ to: "/login" });
+            // window.location.href = "/login";
         }
         return Promise.reject(error);
     }

@@ -46,24 +46,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-4"
             >
-                {/* Detalle */}
-                <FormField
-                    name="detail"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Detalle</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="Descripción del producto"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
                 {/* Nombre */}
                 <FormField
                     name="name"
@@ -81,7 +63,23 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
-
+                {/* Detalle */}
+                <FormField
+                    name="detail"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Detalle</FormLabel>
+                            <FormControl>
+                                <Input
+                                    placeholder="Descripción del producto"
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 {/* Precio */}
                 <FormField
                     name="price"
@@ -106,10 +104,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
-
-                {/* Costos
+                Costos
                 <FormField
-                    name="costos"
+                    name="cost"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
@@ -130,8 +127,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                             <FormMessage />
                         </FormItem>
                     )}
-                /> */}
-
+                />
                 {/* Tipo de Producto */}
                 <FormField
                     name="productTypeId"
@@ -149,7 +145,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
-
                 <Button type="submit" className="w-full">
                     Guardar
                 </Button>
