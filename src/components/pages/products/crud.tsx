@@ -79,7 +79,7 @@ const ProductsPage: React.FC = () => {
                           ...product,
                           costos: parseFloat(
                               (
-                                  product.costs *
+                                  product.cost *
                                   (1 + increasePercentage / 100)
                               ).toFixed(2)
                           ),
