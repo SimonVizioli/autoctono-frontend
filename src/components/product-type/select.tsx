@@ -6,31 +6,14 @@ import React, { useEffect, useState } from "react";
 
 type SelectTipoProductoProps = {
     onChange: (value: string) => void;
-    initialValue?: string;
+    value?: string;
 };
 
 const SelectTipoProducto: React.FC<SelectTipoProductoProps> = ({
     onChange,
-    initialValue,
+    value,
 }) => {
     const [productType, setProductType] = useState<ProductType[]>([]);
-    const [selectedId, setSelectedId] = useState<string | undefined>(
-        initialValue
-    );
-
-    const handleSelect = (productTypeId: string) => {
-        setSelectedId(productTypeId); // Actualizas tu estado local
-
-        const selectedProductType = productType?.find(
-            (product) => product.id == productTypeId
-        );
-
-        if (selectedProductType) {
-            selectedProductType.id = productTypeId.toString();
-            const id = selectedProductType.id;
-            onChange(id); // Notificas al padre el objeto seleccionado
-        }
-    };
 
     useEffect(() => {
         fetchAll();
@@ -50,8 +33,8 @@ const SelectTipoProducto: React.FC<SelectTipoProductoProps> = ({
     return (
         <FetchSelect
             data={productType}
-            onChange={handleSelect}
-            value={selectedId}
+            onChange={onChange}
+            value={value}
             placeholder="Selecciona un tipo de producto"
             getKey={(item) => item.id.toString()}
             getLabel={(item) => item.name}

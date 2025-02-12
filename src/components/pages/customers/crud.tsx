@@ -36,10 +36,24 @@ const Customers: React.FC = () => {
         }
     };
 
-    const update = async (data: Customer) => {
-        setCustomers(
-            customers.map((item) => (item.id === data.id ? data : item))
-        );
+    const update = async (updatedItem: Customer) => {
+        try {
+            const id = updatedItem.id;
+            const data = updatedItem;
+            const updatedCustomer = (await CustomersApi.put(
+                id,
+                data
+            )) as Customer;
+
+            setCustomers((prevCustomers) =>
+                prevCustomers.map((item) =>
+                    item.id === updatedCustomer.id ? updatedCustomer : item
+                )
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const deleteEntry = async (id: string) => {

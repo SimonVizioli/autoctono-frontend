@@ -40,11 +40,20 @@ const ProductsPage: React.FC = () => {
     };
 
     const update = async (updatedItem: Product) => {
-        setProducts(
-            products.map((item) =>
-                item.id === updatedItem.id ? updatedItem : item
-            )
-        );
+        try {
+            const id = updatedItem.id;
+            const data = updatedItem;
+            const updatedProduct = (await ProductsApi.put(id, data)) as Product;
+
+            setProducts((prevProducts) =>
+                prevProducts.map((item) =>
+                    item.id === updatedProduct.id ? updatedProduct : item
+                )
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const deleteEntry = async (id: string) => {

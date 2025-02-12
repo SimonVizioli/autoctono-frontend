@@ -138,7 +138,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                             <FormControl>
                                 <SelectTipoProducto
                                     onChange={field.onChange}
-                                    initialValue={field.value}
+                                    value={field.value.toString()}
                                 />
                             </FormControl>
                             <FormMessage />

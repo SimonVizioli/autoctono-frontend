@@ -36,11 +36,19 @@ const SalesPage: React.FC = () => {
     };
 
     const update = async (updatedItem: Sales) => {
-        setSales(
-            sales.map((item) =>
-                item.id === updatedItem.id ? updatedItem : item
-            )
-        );
+        try {
+            const id = updatedItem.id;
+            const data = updatedItem;
+            const updatedSale = (await SalesApi.put(id, data)) as Sales;
+            setSales((prevSales) =>
+                prevSales.map((item) =>
+                    item.id === updatedSale.id ? updatedSale : item
+                )
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const deleteEntry = async (id: string) => {

@@ -6,29 +6,11 @@ import React, { useEffect, useState } from "react";
 
 type SelectStatusProps = {
     onChange: (value: string) => void;
-    initialValue?: string;
+    value?: string;
 };
 
-const SelectCliente: React.FC<SelectStatusProps> = ({
-    onChange,
-    initialValue,
-}) => {
+const SelectCliente: React.FC<SelectStatusProps> = ({ onChange, value }) => {
     const [status, setStatus] = useState<Status[]>([]);
-    const [selectedId, setSelectedId] = useState<string | undefined>(
-        initialValue
-    );
-
-    const handleSelect = (statusId: string) => {
-        setSelectedId(statusId); // Actualizas tu estado local
-
-        const selectedStatus = status?.find((status) => status.id == statusId);
-
-        if (selectedStatus) {
-            selectedStatus.id = statusId.toString();
-            const id = selectedStatus.id;
-            onChange(id); // Notificas al padre el objeto seleccionado
-        }
-    };
 
     useEffect(() => {
         fetchAll();
@@ -46,8 +28,8 @@ const SelectCliente: React.FC<SelectStatusProps> = ({
     return (
         <FetchSelect
             data={status}
-            onChange={handleSelect}
-            value={selectedId}
+            onChange={onChange}
+            value={value}
             placeholder="Selecciona un estado de venta "
             getKey={(item) => item.id.toString()}
             getLabel={(item) => item.name}

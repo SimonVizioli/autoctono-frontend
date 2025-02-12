@@ -51,8 +51,10 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                                 <FormLabel>Producto</FormLabel>
                                 <FormControl>
                                     <SelectProducto
-                                        onChange={field.onChange}
-                                        initialValue={field.value}
+                                        onChange={(selectedProduct) => {
+                                            field.onChange(selectedProduct);
+                                        }}
+                                        value={field?.value?.id?.toString()}
                                     />
                                 </FormControl>
                                 <FormMessage />
