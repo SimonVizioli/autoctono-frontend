@@ -9,6 +9,8 @@ import Inventory from "@/components/pages/inventory/crud";
 import Sales from "@/components/pages/sales/crud";
 import Customers from "@/components/pages/customers/crud";
 import ProductsPage from "@/components/pages/products/crud";
+import ProductTypePage from "@/components/pages/product-type/crud";
+import SaleStatusPage from "@/components/pages/sale-status/crud";
 
 // Configuración de rutas
 const router = createHashRouter([
@@ -36,6 +38,16 @@ const router = createHashRouter([
             {
                 path: "customers",
                 element: <ProtectedRoute element={<Customers />} />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: "product-types",
+                element: <ProtectedRoute element={<ProductTypePage />} />,
+                errorElement: <ErrorPage />,
+            },
+            {
+                path: "sale-status",
+                element: <ProtectedRoute element={<SaleStatusPage />} />,
                 errorElement: <ErrorPage />,
             },
             {

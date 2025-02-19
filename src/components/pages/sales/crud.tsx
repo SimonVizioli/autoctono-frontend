@@ -102,6 +102,7 @@ const SalesPage: React.FC = () => {
                     render: (row: Sales) => `$ ${row?.total?.toFixed(2)}`,
                 },
             ]}
+            customModalHeader={"Crear nueva venta"}
             data={sales}
             fetchAll={fetchAll}
             create={create}

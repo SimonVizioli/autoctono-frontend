@@ -76,6 +76,7 @@ const InventoryPage: React.FC = () => {
                 { key: "quantity", label: "Cantidad (gramos)" },
             ]}
             data={inventory}
+            customModalHeader={"Cargar nuevo stock"}
             fetchAll={fetchAll}
             create={create}
             update={update}

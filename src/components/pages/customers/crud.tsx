@@ -78,6 +78,7 @@ const Customers: React.FC = () => {
                 { key: "email", label: "Email" },
             ]}
             data={customers}
+            customModalHeader={"Alta a nuevo cliente"}
             fetchAll={fetchAll}
             create={create}
             update={update}
