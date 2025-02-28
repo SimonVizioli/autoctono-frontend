@@ -5,4 +5,10 @@ export interface Inventory {
     quantity: number;
     productId: string;
     product: Product;
+    unitOfMeasurement: unitOfMeasurement;
+}
+
+export enum unitOfMeasurement {
+    UNIT = "unit",
+    GRAMS = "grams",
 }

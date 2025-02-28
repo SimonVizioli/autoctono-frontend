@@ -9,6 +9,7 @@ export interface ProductSale {
     product: Product;
     quantity: number;
     unitPrice: number;
+    percentageDiscount: number;
     createdAt: string;
     updatedAt: string;
 }
@@ -17,6 +18,7 @@ export interface ProductSaleItem {
     productId: string;
     unitPrice: number;
     quantity: number;
+    percentageDiscount: number;
 }
 
 export interface Sales {
@@ -28,6 +30,12 @@ export interface Sales {
     status: Status;
     customer: Customer;
     productId: string;
+    iva: IVAValues;
     products: ProductSaleItem[];
     productSales: ProductSale[];
+}
+
+export enum IVAValues {
+    TENPOINTFIVE = "10.5",
+    TWENTYONE = "21",
 }

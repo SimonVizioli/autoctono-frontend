@@ -18,7 +18,15 @@ import { Trash } from "lucide-react";
 import SelectCliente from "@/components/customers/select";
 import SelectProducto from "@/components/products/select";
 import SelectEstado from "@/components/states/select";
-import { Sales } from "@/types/sales";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { toast } from "@/hooks/use-toast";
+import { IVAValues, Sales } from "@/types/sales";
 
 // Props del componente
 const SalesForm: React.FC<{
@@ -35,6 +43,7 @@ const SalesForm: React.FC<{
                           productId: ps.product.id, // Accedemos al id desde `ps.product`
                           unitPrice: ps.unitPrice,
                           quantity: ps.quantity,
+                          percentageDiscount: ps.percentageDiscount,
                       })) || [],
               }
             : {
@@ -42,6 +51,7 @@ const SalesForm: React.FC<{
                   total: 0,
                   customerId: "",
                   statusId: "",
+                  iva: IVAValues.TWENTYONE,
                   products: [],
               },
     });
@@ -79,7 +89,10 @@ const SalesForm: React.FC<{
     // Mira cómo productId es un string, unitPrice es un number
     const handleProductSelection = (
         index: number,
-        selectedProduct: { id: string; price: number }
+        selectedProduct: {
+            id: string;
+            price: number;
+        }
     ) => {
         update(index, {
             ...fields[index],
@@ -96,6 +109,7 @@ const SalesForm: React.FC<{
             productId: "", // no un objeto
             unitPrice: 0,
             quantity: 1,
+            percentageDiscount: 0,
         });
     };
 
@@ -105,6 +119,14 @@ const SalesForm: React.FC<{
      * Al enviar el formulario, simplemente despachamos la data
      */
     const handleSubmit = (values: Sales) => {
+        if (!values.iva) {
+            toast({
+                title: "Error",
+                description: "Debes seleccionar un valor de IVA.",
+                variant: "destructive",
+            });
+            return;
+        }
         onSubmit(values);
         form.reset();
     };
@@ -247,6 +269,63 @@ const SalesForm: React.FC<{
                                                 )}`}
                                                 readOnly
                                             />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            {/* percentageDiscount */}
+                            <FormField
+                                name={`products.${index}.percentageDiscount`}
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>Descuento (%)</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                placeholder="0"
+                                                value={field.value ?? ""}
+                                                onChange={(e) =>
+                                                    field.onChange(
+                                                        Number(e.target.value)
+                                                    )
+                                                }
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            {/* iva */}
+                            <FormField
+                                name="iva"
+                                control={form.control}
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>IVA</FormLabel>
+                                        <FormControl>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                value={field.value}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Selecciona IVA" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {Object.values(
+                                                        IVAValues
+                                                    ).map((iva) => (
+                                                        <SelectItem
+                                                            key={iva}
+                                                            value={iva}
+                                                        >
+                                                            {iva}%
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

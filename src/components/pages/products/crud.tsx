@@ -146,7 +146,7 @@ const ProductsPage: React.FC = () => {
                     { key: "detail", label: "Detalle" },
                     {
                         key: "productTypeId",
-                        label: "Tipo de Producto",
+                        label: "Categoría",
                         render: (item) => {
                             return <div>{item.productType.name}</div>;
                         },
@@ -154,9 +154,6 @@ const ProductsPage: React.FC = () => {
                     {
                         key: "code",
                         label: "Código",
-                        render: (item) => {
-                            return <div>{item.productType.code}</div>;
-                        },
                     },
                     {
                         key: "price",
@@ -167,6 +164,21 @@ const ProductsPage: React.FC = () => {
                         key: "cost",
                         label: "Costos",
                         render: (item) => `$ ${item.cost}`,
+                    },
+                ]}
+                filters={[
+                    { key: "name", label: "Nombre" },
+                    { key: "detail", label: "Detalle" },
+                    { key: "code", label: "Código" },
+                    {
+                        key: "productTypeId",
+                        label: "Categoría",
+                        render: (item, filterValue) => {
+                            const lowerFilter = filterValue.toLowerCase();
+                            return item.name
+                                .toLowerCase()
+                                .includes(lowerFilter);
+                        },
                     },
                 ]}
                 customModalHeader={"Crear nuevo producto"}

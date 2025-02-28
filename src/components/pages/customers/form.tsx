@@ -28,6 +28,8 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
             firstName: "",
             lastName: "",
             email: "",
+            cuit: "",
+            contactNumber: "",
         },
     });
 
@@ -98,6 +100,32 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                                     placeholder="juan.perez@example.com"
                                     {...field}
                                 />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="cuit"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Cuit</FormLabel>
+                            <FormControl>
+                                <Input placeholder="20-12345678-9" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="contactNumber"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Número de contacto</FormLabel>
+                            <FormControl>
+                                <Input placeholder="261-1234567" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

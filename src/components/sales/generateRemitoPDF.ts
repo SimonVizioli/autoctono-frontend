@@ -2,96 +2,162 @@ import { Sales } from "@/types/sales";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-// Importar imágenes en Base64
+// Importar íconos / imágenes en base64 o ruta
 import facebookIcon from "@/assets/icons/facebook.png";
 import instagramIcon from "@/assets/icons/instagram.png";
 import phoneIcon from "@/assets/icons/phone.png";
+import logo from "@/assets/icons/logo.jpeg"; // Ajusta la ruta si es distinta
 
 export const generateRemitoPDF = (sale: Sales) => {
-    const doc = new jsPDF();
-
-    // Buscar cliente y estado en los datos falsos
-    const cliente = sale.customer.id
-        ? `${sale.customer.lastName}, ${sale.customer.firstName}`
-        : "Cliente desconocido";
-    const estado = sale.status.id ? sale.status.name : "Estado desconocido";
-
-    // Obtener altura total de la página
-    const pageHeight = doc.internal.pageSize.height;
-
-    // 📌 Pie de Página con Iconos y Redes Sociales (Siempre en la parte inferior)
-    const footerY = pageHeight - 20; // Fijar el pie de página en la parte inferior
-
-    // 📌 Cambiar Fuente del Título a una más llamativa
-    doc.setFontSize(20);
-    doc.setFont("times", "bold"); // Cambiar "times" por otra fuente si se carga una personalizada
-    doc.text("CERÁMICA PELLIZER", 105, 15, { align: "center" });
-
-    // 📌 Tabla de Datos del Remito (sin bordes internos)
-    autoTable(doc, {
-        startY: 25,
-        theme: "plain",
-        styles: { fontSize: 10, cellPadding: 1, lineWidth: 0.5 },
-        tableLineColor: [0, 0, 0], // Borde externo negro
-        tableLineWidth: 0.5,
-        body: [
-            ["Fecha:", new Date().toLocaleDateString()],
-            ["Cliente:", cliente],
-            ["Estado:", estado],
-            ["Descripción:", sale.detail],
-        ],
+    // 1) Crear documento A4
+    const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
     });
 
-    // Posición final de la tabla de datos
-    //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const dataFinalY = (doc as any).autoTable.previous?.finalY || 40;
+    // Ajustes de color de línea y grosor (gris claro)
+    doc.setDrawColor(160);
+    doc.setLineWidth(0.5);
 
-    // 📌 Tabla de Productos (con color gris)
+    // ---------------------------------------------------------
+    // 2) Encabezado (borde redondeado) con Logo, Fecha, Nombre y Teléfono
+    // ---------------------------------------------------------
+    // Rectángulo redondeado para el encabezado
+    // (x=10, y=10, ancho=190, alto=40, radio=3)
+    doc.roundedRect(10, 10, 190, 40, 2, 2);
+
+    // Logo (arriba a la izquierda)
+    // Ajusta posición y tamaño según tu necesidad
+    doc.addImage(logo, "JPEG", 15, 11, 35, 35);
+
+    // Fecha (arriba a la derecha)
+    doc.setFont("times", "normal");
+    doc.setFontSize(15);
+    doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 20);
+
+    // Nombre y Teléfono (misma línea, debajo de la fecha y logo)
+    const nombreCliente = sale.customer.id
+        ? `${sale.customer.lastName}, ${sale.customer.firstName}`
+        : "Cliente desconocido";
+    const telefonoCliente = sale.customer.contactNumber || "No especificado";
+
+    // Ejemplo: Nombre a la izquierda, Teléfono a la derecha
+    doc.text(`Nombre: ${nombreCliente}`, 120, 35, { charSpace: 1 });
+    doc.text(`Teléfono: ${telefonoCliente}`, 120, 45, { charSpace: 1 });
+
+    // ---------------------------------------------------------
+    // 3) Sección de la tabla (con borde redondeado)
+    // ---------------------------------------------------------
+    // Rectángulo para el cuerpo de la tabla
+    // (x=10, y=55, ancho=190, alto=170, radio=3) - ajusta si necesitas más/menos alto
+    doc.roundedRect(10, 55, 190, 235, 2, 2);
+
+    // Tabla de productos
+    // Comienza en Y=55 + un pequeño margen
+    const tableStartY = 55;
+
     autoTable(doc, {
-        startY: dataFinalY + 10,
-        head: [["Cantidad", "Producto", "Precio Unitario"]],
-        body: sale.productSales.map((producto) => [
-            producto.quantity || 1,
-            producto.product.detail || "Producto sin descripción",
-            `$${producto.unitPrice.toFixed(2)}`,
-        ]),
+        startY: tableStartY + 5,
+        margin: { left: 15, right: 15 }, // Para no pegar a los bordes del rectángulo
+        head: [
+            [
+                "Cant.",
+                "Descripción",
+                "Desc. (%)",
+                "IVA (%)",
+                "Precio U.",
+                "Subtotal",
+            ],
+        ],
+        body: sale.productSales.map((item) => {
+            const quantity = item.quantity || 1;
+            const detail = item.product?.detail || "Sin descripción";
+            const discount = item?.percentageDiscount || 0; // descuento en %
+            const iva = sale?.iva || 0; // IVA en %
+            const unitPrice = item.unitPrice || 0;
+
+            // Cálculo del total por producto:
+            // (cantidad * precioU) * (1 - desc/100) * (1 + iva/100)
+            const subtotal =
+                quantity *
+                unitPrice *
+                (1 - discount / 100) *
+                ((1 + Number(iva)) / 100);
+
+            return [
+                String(quantity),
+                detail,
+                `${discount}%`,
+                `${iva}%`,
+                `$${unitPrice.toFixed(2)}`,
+                `$${subtotal.toFixed(2)}`,
+            ];
+        }),
         theme: "grid",
-        styles: { fontSize: 10, cellPadding: 3 },
+        styles: {
+            fontSize: 10,
+            cellPadding: 3,
+        },
         headStyles: {
-            fillColor: [220, 220, 220], // Color gris
+            fillColor: [255, 255, 255],
             textColor: 0,
             fontStyle: "bold",
         },
+        tableLineColor: 160,
+        tableLineWidth: 0.5,
     });
 
-    // Posición final de la tabla de productos
+    // Posición final de la tabla
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const productsFinalY = (doc as any).autoTable.previous?.finalY || 90;
+    const finalY = (doc as any).autoTable.previous?.finalY || tableStartY + 20;
 
-    // 📌 Total alineado a la derecha
-    doc.setFontSize(14);
-    doc.setFont("times", "bold");
-    doc.text(`Total: $${sale.total.toFixed(2)}`, 165, productsFinalY + 15);
+    // ---------------------------------------------------------
+    // 4) Calcular y mostrar el Total Global
+    // ---------------------------------------------------------
+    // Recorremos los productos para sumar con la misma fórmula
+    const totalGlobal = sale.productSales.reduce((acc, item) => {
+        const quantity = item.quantity || 1;
+        const discount = item?.percentageDiscount || 0;
+        const iva = sale?.iva || 0;
+        const unitPrice = item.unitPrice || 0;
+        const subtotal =
+            quantity *
+            unitPrice *
+            (1 - discount / 100) *
+            (1 + Number(iva) / 100);
+        return acc + subtotal;
+    }, 0);
 
-    // 📌 Línea separadora antes del pie de página
-    doc.setLineWidth(0.5);
-    doc.line(10, footerY - 10, 200, footerY - 10);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    // Ubicamos el texto cerca del borde derecho del recuadro de la tabla
+    // (ajusta Y según tu preferencia)
+    doc.text(`Total: $${totalGlobal.toFixed(2)}`, 165, finalY + 10);
 
-    // 📌 Pie de Página con Iconos y Redes Sociales
+    // ---------------------------------------------------------
+    // 5) Pie con íconos (borde redondeado)
+    // ---------------------------------------------------------
+    doc.line(10, 265, 200, 265); // Línea horizontal
+
+    // Íconos y textos centrados en ese rectángulo
     const iconSize = 7;
-
-    // Teléfono
-    doc.addImage(phoneIcon, "PNG", 10, footerY, iconSize, iconSize);
-    doc.text("2616673847", 20, footerY + 5);
+    const iconY = 275; // un poco debajo del borde superior
 
     // Instagram
-    doc.addImage(instagramIcon, "PNG", 80, footerY, iconSize, iconSize);
-    doc.text("@ceramica.pellizer", 90, footerY + 5);
+    doc.addImage(instagramIcon, "PNG", 25, iconY, iconSize, iconSize);
+    doc.text("Ceramica.Pellizzer", 35, iconY + 5);
+
+    // Teléfono
+    doc.addImage(phoneIcon, "PNG", 80, iconY, iconSize, iconSize);
+    doc.text("2616673847", 90, iconY + 5);
 
     // Facebook
-    doc.addImage(facebookIcon, "PNG", 150, footerY, iconSize, iconSize);
-    doc.text("ceramicapellizer", 160, footerY + 5);
+    doc.addImage(facebookIcon, "PNG", 135, iconY, iconSize, iconSize);
+    doc.text("Ceramica/Pellizzer", 145, iconY + 5);
 
-    // 📌 Descargar el PDF
+    // ---------------------------------------------------------
+    // 6) Guardar/descargar el PDF
+    // ---------------------------------------------------------
     doc.save(`Remito_Venta_${sale.id}.pdf`);
 };

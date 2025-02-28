@@ -73,7 +73,13 @@ const InventoryPage: React.FC = () => {
                     label: "Producto",
                     render: (item) => item?.product?.name,
                 },
-                { key: "quantity", label: "Cantidad (gramos)" },
+                { key: "quantity", label: "Cantidad" },
+                {
+                    key: "unitOfMeasurement",
+                    label: "Unidad de Medida",
+                    render: (item) =>
+                        item?.unitOfMeasurement == "unit" ? "Unidad" : "Gramos",
+                },
             ]}
             data={inventory}
             customModalHeader={"Cargar nuevo stock"}

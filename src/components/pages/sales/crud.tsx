@@ -66,6 +66,8 @@ const SalesPage: React.FC = () => {
             title={
                 <h1 className="text-2xl font-bold mb-4">Gestión de Ventas</h1>
             }
+            // Definimos los filtros a aplicar
+
             columns={[
                 {
                     key: "detail",
@@ -97,6 +99,11 @@ const SalesPage: React.FC = () => {
                             : "Sin productos",
                 },
                 {
+                    key: "iva",
+                    label: "IVA",
+                    render: (row: Sales) => `${row?.iva} %`,
+                },
+                {
                     key: "total",
                     label: "Total",
                     render: (row: Sales) => `$ ${row?.total?.toFixed(2)}`,
@@ -109,6 +116,24 @@ const SalesPage: React.FC = () => {
             update={update}
             deleteEntry={deleteEntry}
             FormComponent={SalesForm}
+            filters={[
+                { key: "detail", label: "Filtrar por detalle" },
+                {
+                    key: "customer",
+                    label: "Filtrar por nombre o apellido",
+                    render: (item, filterValue) => {
+                        const lowerFilter = filterValue.toLowerCase();
+                        return (
+                            item.customer.firstName
+                                .toLowerCase()
+                                .includes(lowerFilter) ||
+                            item.customer.lastName
+                                .toLowerCase()
+                                .includes(lowerFilter)
+                        );
+                    },
+                },
+            ]}
             renderActionsColumn={(item) => {
                 return (
                     <Button

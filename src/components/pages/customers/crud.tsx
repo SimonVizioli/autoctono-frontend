@@ -76,6 +76,8 @@ const Customers: React.FC = () => {
                 { key: "firstName", label: "Nombre" },
                 { key: "lastName", label: "Apellido" },
                 { key: "email", label: "Email" },
+                { key: "cuit", label: "Cuit" },
+                { key: "contactNumber", label: "Número de contacto" },
             ]}
             data={customers}
             customModalHeader={"Alta a nuevo cliente"}

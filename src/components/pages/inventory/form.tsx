@@ -9,9 +9,16 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Inventory } from "@/types/inventory";
+import { Inventory, unitOfMeasurement } from "@/types/inventory";
 import React from "react";
 import { useForm } from "react-hook-form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 type InventoryFormProps = {
     onSubmit: (data: Inventory) => void;
@@ -67,13 +74,47 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Cantidad (gramos)</FormLabel>
+                            <FormLabel>Cantidad</FormLabel>
                             <FormControl>
                                 <Input
                                     type="number"
                                     placeholder="0"
                                     {...field}
                                 />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    name="unitOfMeasurement"
+                    control={form.control}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Unidad de medida</FormLabel>
+                            <FormControl>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona Unidad de Medida" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.values(unitOfMeasurement).map(
+                                            (unidad) => (
+                                                <SelectItem
+                                                    key={unidad}
+                                                    value={unidad}
+                                                >
+                                                    {unidad === "unit"
+                                                        ? "Unidad"
+                                                        : "Gramos"}
+                                                </SelectItem>
+                                            )
+                                        )}
+                                    </SelectContent>
+                                </Select>
                             </FormControl>
                             <FormMessage />
                         </FormItem>

@@ -4,4 +4,6 @@ export interface Customer {
     firstName: string;
     lastName: string;
     email: string;
+    cuit: string;
+    contactNumber: string;
 }
