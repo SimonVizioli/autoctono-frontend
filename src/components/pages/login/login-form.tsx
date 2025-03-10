@@ -26,10 +26,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { fakeUser } from "@/data/fake-user";
+// import { fakeUser } from "@/data/fake-user";
 
 const loginSchema = z.object({
-    email: z.string().email("Ingresa un correo válido"),
+    username: z.string().min(3, "El usuario debe tener al menos 3 caracteres"),
     password: z
         .string()
         .min(6, "La contraseña debe tener al menos 6 caracteres"),
@@ -43,18 +43,16 @@ const LoginForm: React.FC = () => {
     const form = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
-            email: "",
+            username: "",
             password: "",
         },
     });
 
-    const onSubmit = async (values: { email: string; password: string }) => {
+    const onSubmit = async (values: { username: string; password: string }) => {
         setIsLoading(true);
-        if (
-            values.email === fakeUser.email &&
-            values.password === fakeUser.password
-        ) {
-            login(values.email, values.password);
+        const success = await login(values.username, values.password);
+        if (success) {
+            login(values.username, values.password);
             toast({
                 title: "Inicio de sesión exitoso",
                 description: "¡Bienvenido a Autóctono!",
@@ -71,7 +69,7 @@ const LoginForm: React.FC = () => {
                 description: "Credenciales inválidas. Intenta de nuevo.",
                 variant: "destructive",
             });
-            form.setError("email", { message: "Credenciales inválidas" });
+            form.setError("username", { message: "Credenciales inválidas" });
             form.setError("password", { message: "" });
         }
     };
@@ -94,13 +92,13 @@ const LoginForm: React.FC = () => {
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                             control={form.control}
-                            name="email"
+                            name="username"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Correo Electrónico</FormLabel>
+                                    <FormLabel>Nombre de Usuario</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="nombre@ejemplo.com"
+                                            placeholder="JohnDoe"
                                             disabled={isLoading}
                                             {...field}
                                         />

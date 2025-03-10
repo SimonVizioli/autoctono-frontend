@@ -1,29 +1,63 @@
-import { fakeInventory } from "@/data/fake-data";
+import { StockApi } from "@/service/api";
 import { Inventory } from "@/types/inventory";
-import ActionsColumn from "@/utils/actions/action-column";
 import Crud from "@/utils/crud/crud";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InventoryForm from "./form";
 
 const InventoryPage: React.FC = () => {
-    const [inventory, setInventory] = useState<Inventory[]>(fakeInventory);
+    const [inventory, setInventory] = useState<Inventory[]>([]);
 
-    const fetchAll = async () => inventory;
+    useEffect(() => {
+        fetchAll();
+    }, []);
+
+    const fetchAll = async () => {
+        try {
+            const getStock = (await StockApi.get()) as Inventory[];
+            setInventory(getStock);
+            return getStock;
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
+    };
 
     const create = async (data: Inventory) => {
-        setInventory([...inventory, { ...data, id: Date.now().toString() }]);
+        try {
+            const saveStock = (await StockApi.post(data)) as Inventory;
+            setInventory((prevInventory) => [...prevInventory, saveStock]);
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const update = async (updatedItem: Inventory) => {
-        setInventory(
-            inventory.map((item) =>
-                item.id === updatedItem.id ? updatedItem : item
-            )
-        );
+        try {
+            const id = updatedItem.id;
+            const data = updatedItem;
+            const updateStock = (await StockApi.put(id, data)) as Inventory;
+            setInventory((prevInventory) =>
+                prevInventory.map((item) =>
+                    item.id === updateStock.id ? updateStock : item
+                )
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const deleteEntry = async (id: string) => {
-        setInventory(inventory.filter((item) => item.id !== id));
+        try {
+            await StockApi.delete(id);
+            setInventory((prevInventory) =>
+                prevInventory.filter((item) => item.id !== id)
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     return (
@@ -34,22 +68,26 @@ const InventoryPage: React.FC = () => {
                 </h1>
             }
             columns={[
-                { key: "producto", label: "Producto" },
-                { key: "cantidad", label: "Cantidad (gramos)" },
+                {
+                    key: "product",
+                    label: "Producto",
+                    render: (item) => item?.product?.name,
+                },
+                { key: "quantity", label: "Cantidad" },
+                {
+                    key: "unitOfMeasurement",
+                    label: "Unidad de Medida",
+                    render: (item) =>
+                        item?.unitOfMeasurement == "unit" ? "Unidad" : "Gramos",
+                },
             ]}
             data={inventory}
+            customModalHeader={"Cargar nuevo stock"}
             fetchAll={fetchAll}
             create={create}
             update={update}
             deleteEntry={deleteEntry}
             FormComponent={InventoryForm}
-            renderActionsColumn={(item) => (
-                <ActionsColumn
-                    item={item}
-                    onEdit={(item) => console.log("Editar", item)}
-                    onDelete={(id) => console.log("Eliminar", id)}
-                />
-            )}
         />
     );
 };

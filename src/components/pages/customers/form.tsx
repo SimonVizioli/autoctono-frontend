@@ -24,10 +24,12 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
 }) => {
     const form = useForm<Customer>({
         defaultValues: initialData || {
-            razonSocial: "",
-            nombre: "",
-            apellido: "",
+            companyName: "",
+            firstName: "",
+            lastName: "",
             email: "",
+            cuit: "",
+            contactNumber: "",
         },
     });
 
@@ -50,7 +52,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
             >
                 <FormField
                     control={form.control}
-                    name="razonSocial"
+                    name="companyName"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Razón Social</FormLabel>
@@ -63,7 +65,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 />
                 <FormField
                     control={form.control}
-                    name="nombre"
+                    name="firstName"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Nombre</FormLabel>
@@ -76,7 +78,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 />
                 <FormField
                     control={form.control}
-                    name="apellido"
+                    name="lastName"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Apellido</FormLabel>
@@ -98,6 +100,32 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                                     placeholder="juan.perez@example.com"
                                     {...field}
                                 />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="cuit"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Cuit</FormLabel>
+                            <FormControl>
+                                <Input placeholder="20-12345678-9" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="contactNumber"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Número de contacto</FormLabel>
+                            <FormControl>
+                                <Input placeholder="261-1234567" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

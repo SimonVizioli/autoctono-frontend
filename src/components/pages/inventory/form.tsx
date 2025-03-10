@@ -1,3 +1,4 @@
+import SelectProducto from "@/components/products/select";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -8,9 +9,16 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Inventory } from "@/types/inventory";
+import { Inventory, unitOfMeasurement } from "@/types/inventory";
 import React from "react";
 import { useForm } from "react-hook-form";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 type InventoryFormProps = {
     onSubmit: (data: Inventory) => void;
@@ -23,12 +31,14 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
 }) => {
     const form = useForm<Inventory>({
         defaultValues: initialData || {
-            cantidad: 0,
-            producto: "",
+            quantity: 0,
+            productId: "",
+            product: {},
         },
     });
 
     const handleSubmit = (values: Inventory) => {
+        values.productId = values.product.id;
         onSubmit(values);
         form.reset();
     };
@@ -40,14 +50,35 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                 className="space-y-4"
             >
                 <FormField
-                    name="producto"
+                    name="product"
+                    control={form.control}
+                    render={({ field }) => {
+                        return (
+                            <FormItem>
+                                <FormLabel>Producto</FormLabel>
+                                <FormControl>
+                                    <SelectProducto
+                                        onChange={(selectedProduct) => {
+                                            field.onChange(selectedProduct);
+                                        }}
+                                        value={field?.value?.id?.toString()}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        );
+                    }}
+                />
+                <FormField
+                    name="quantity"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Producto</FormLabel>
+                            <FormLabel>Cantidad</FormLabel>
                             <FormControl>
                                 <Input
-                                    placeholder="Nombre del producto"
+                                    type="number"
+                                    placeholder="0"
                                     {...field}
                                 />
                             </FormControl>
@@ -56,17 +87,34 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                     )}
                 />
                 <FormField
-                    name="cantidad"
+                    name="unitOfMeasurement"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Cantidad (gramos)</FormLabel>
+                            <FormLabel>Unidad de medida</FormLabel>
                             <FormControl>
-                                <Input
-                                    type="number"
-                                    placeholder="0"
-                                    {...field}
-                                />
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona Unidad de Medida" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.values(unitOfMeasurement).map(
+                                            (unidad) => (
+                                                <SelectItem
+                                                    key={unidad}
+                                                    value={unidad}
+                                                >
+                                                    {unidad === "unit"
+                                                        ? "Unidad"
+                                                        : "Gramos"}
+                                                </SelectItem>
+                                            )
+                                        )}
+                                    </SelectContent>
+                                </Select>
                             </FormControl>
                             <FormMessage />
                         </FormItem>

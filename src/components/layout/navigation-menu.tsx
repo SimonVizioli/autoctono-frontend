@@ -4,7 +4,10 @@ import { Link } from "react-router-dom";
 const routes = [
     { title: "Inventario", path: "/stock" },
     { title: "Ventas", path: "/sales" },
+    { title: "Productos", path: "/products" },
     { title: "Clientes", path: "/customers" },
+    { title: "Categoría", path: "/product-types" },
+    { title: "Estados de Ventas", path: "/sale-status" },
 ];
 
 const NavigationMenu: React.FC = () => {

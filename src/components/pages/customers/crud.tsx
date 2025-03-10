@@ -1,26 +1,69 @@
 // src/pages/customers/customers.tsx
-import { fakeCustomers } from "@/data/fake-data";
+import { CustomersApi } from "@/service/api";
 import { Customer } from "@/types/customer";
-import ActionsColumn from "@/utils/actions/action-column";
 import Crud from "@/utils/crud/crud";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomerForm from "./form";
 
 const Customers: React.FC = () => {
-    const [customers, setCustomers] = useState<Customer[]>(fakeCustomers);
+    const [customers, setCustomers] = useState<Customer[]>([]);
 
-    const create = async (data: Customer) => {
-        setCustomers([...customers, { ...data, id: Date.now().toString() }]);
+    useEffect(() => {
+        fetchAll();
+    }, []);
+
+    const fetchAll = async () => {
+        try {
+            const getCustomers = (await CustomersApi.get()) as Customer[];
+            setCustomers(getCustomers);
+            return getCustomers;
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
-    const update = async (data: Customer) => {
-        setCustomers(
-            customers.map((item) => (item.id === data.id ? data : item))
-        );
+    const create = async (data: Customer) => {
+        try {
+            const createCustomer = await CustomersApi.post(data);
+            setCustomers((prevCustomers) => [
+                ...prevCustomers,
+                createCustomer as Customer,
+            ]);
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
+    };
+
+    const update = async (updatedItem: Customer) => {
+        try {
+            const id = updatedItem.id;
+            const data = updatedItem;
+            const updatedCustomer = (await CustomersApi.put(
+                id,
+                data
+            )) as Customer;
+
+            setCustomers((prevCustomers) =>
+                prevCustomers.map((item) =>
+                    item.id === updatedCustomer.id ? updatedCustomer : item
+                )
+            );
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     const deleteEntry = async (id: string) => {
-        setCustomers(customers.filter((item) => item.id !== id));
+        try {
+            await CustomersApi.delete(id);
+            setCustomers(customers.filter((item) => item.id !== id));
+        } catch (error: unknown) {
+            console.error("Error en fetchAll:");
+            throw error;
+        }
     };
 
     return (
@@ -29,24 +72,20 @@ const Customers: React.FC = () => {
                 <h1 className="text-2xl font-bold mb-4">Gestión de clientes</h1>
             }
             columns={[
-                { key: "razonSocial", label: "Razón Social" },
-                { key: "nombre", label: "Nombre" },
-                { key: "apellido", label: "Apellido" },
+                { key: "companyName", label: "Razón Social" },
+                { key: "firstName", label: "Nombre" },
+                { key: "lastName", label: "Apellido" },
                 { key: "email", label: "Email" },
+                { key: "cuit", label: "Cuit" },
+                { key: "contactNumber", label: "Número de contacto" },
             ]}
             data={customers}
-            fetchAll={() => Promise.resolve(customers)}
+            customModalHeader={"Alta a nuevo cliente"}
+            fetchAll={fetchAll}
             create={create}
             update={update}
             deleteEntry={deleteEntry}
             FormComponent={CustomerForm}
-            renderActionsColumn={(item) => (
-                <ActionsColumn
-                    item={item}
-                    onEdit={(item) => console.log("Editar", item)}
-                    onDelete={(id) => console.log("Eliminar", id)}
-                />
-            )}
         />
     );
 };

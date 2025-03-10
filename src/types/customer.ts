@@ -1,7 +1,9 @@
 export interface Customer {
     id: string;
-    razonSocial: string;
-    nombre: string;
-    apellido: string;
+    companyName: string;
+    firstName: string;
+    lastName: string;
     email: string;
+    cuit: string;
+    contactNumber: string;
 }
