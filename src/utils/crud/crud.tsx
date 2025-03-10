@@ -56,6 +56,8 @@ const Crud = <T extends { id: string }>({
         {}
     );
 
+    console.log(fetchAll);
+
     const openModal = (item?: T) => {
         setSelectedItem(item);
         setModalOpen(true);

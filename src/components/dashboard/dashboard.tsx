@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
                                     outerRadius={80}
                                     fill="#8884d8"
                                 >
-                                    {salesData.map((entry, index) => (
+                                    {salesData.map((_entry, index) => (
                                         <Cell
                                             key={`cell-${index}`}
                                             fill={COLORS[index % COLORS.length]}
@@ -83,7 +83,7 @@ const Dashboard: React.FC = () => {
                                 <YAxis />
                                 <Tooltip />
                                 <Bar dataKey="value" fill="#82ca9d">
-                                    {stockData.map((entry, index) => (
+                                    {stockData.map((_entry, index) => (
                                         <Cell
                                             key={`cell-${index}`}
                                             fill={COLORS[index % COLORS.length]}

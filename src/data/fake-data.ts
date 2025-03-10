@@ -1,6 +1,3 @@
-import { Inventory } from "@/types/inventory";
-import { Sales } from "@/types/sales";
-
 // src/data/fake-data.ts
 export const fakeStocks = [
     { id: "1", productoNombre: "Arcilla Roja", cantidad: 150 },
@@ -8,19 +5,19 @@ export const fakeStocks = [
     { id: "3", productoNombre: "Pintura Acrílica", cantidad: 120 },
 ];
 
-export const fakeInventory: Inventory[] = [
-    { id: "1", cantidad: 100, producto: "Arcilla Roja" },
-    { id: "2", cantidad: 50, producto: "Pintura Acrílica" },
-    { id: "3", cantidad: 25, producto: "Cerámica Blanca" },
+export const fakeInventory = [
+    { id: "1", quantity: 100, product: "Arcilla Roja" },
+    { id: "2", quantity: 50, product: "Pintura Acrílica" },
+    { id: "3", quantity: 25, product: "Cerámica Blanca" },
 ];
 
-export const fakeSales: Sales[] = [
+export const fakeSales = [
     {
         id: "1",
         detail: "Venta de arcilla",
         total: 200.0,
-        cliente_id: "1",
-        estado_id: "3",
+        customerId: "1",
+        statusId: "3",
         productos: [
             { producto_id: "1", precioUnitario: 100 },
             { producto_id: "2", precioUnitario: 100 },
