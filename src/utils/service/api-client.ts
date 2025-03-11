@@ -4,7 +4,7 @@ import { Navigate } from "react-router";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
-    url: API_BASE_URL,
+    baseURL: API_BASE_URL,
     headers: {
         "Content-Type": "application/json",
     },
