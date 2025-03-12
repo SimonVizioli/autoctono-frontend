@@ -1,12 +1,12 @@
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PocketKnife, Menu, X } from "lucide-react";
-import { Link } from "react-router-dom";
-import NavigationMenu from "./navigation-menu";
-import UserDropdownMenu from "./user-dropwdown-menu";
-import ThemeSwitcher from "./theme-switcher";
 import useAuth from "@/hooks/use-auth";
 import { motion } from "framer-motion";
+import { Menu, PocketKnife, X } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import NavigationMenu from "./navigation-menu";
+import ThemeSwitcher from "./theme-switcher";
+import UserDropdownMenu from "./user-dropwdown-menu";
 
 export function Header() {
     const { isAuthenticated } = useAuth();

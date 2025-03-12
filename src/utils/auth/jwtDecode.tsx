@@ -19,7 +19,6 @@ export function decodeToken(token: string): { exp?: number } | null {
  */
 export function isTokenExpired(token: string): boolean {
     const decoded = decodeToken(token);
-    console.log("decoded", decoded);
     if (!decoded || !decoded.exp) {
         // Si no hay exp o falló la decodificación, considerarlo inválido
         return true;
