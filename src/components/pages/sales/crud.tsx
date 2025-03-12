@@ -6,6 +6,7 @@ import { Sales } from "@/types/sales";
 import Crud from "@/utils/crud/crud";
 import React, { useEffect, useState } from "react";
 import SalesForm from "./form";
+import { FileText } from "lucide-react";
 
 const SalesPage: React.FC = () => {
     const [sales, setSales] = useState<Sales[]>([]);
@@ -140,10 +141,9 @@ const SalesPage: React.FC = () => {
                         onClick={() => {
                             generateRemitoPDF(item);
                         }}
-                        className="ml-2 bg-teal-400 dark:text-white text-black"
-                        variant={"default"}
+                        variant={"outline"}
                     >
-                        Generar Remito
+                        <FileText /> Generar Remito
                     </Button>
                 );
             }}

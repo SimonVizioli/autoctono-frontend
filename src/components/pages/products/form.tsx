@@ -146,13 +146,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
-                {/* Tipo de Producto */}
+                {/* Categoría */}
                 <FormField
                     name="productTypeId"
                     control={form.control}
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Tipo de Producto</FormLabel>
+                            <FormLabel>Categoría</FormLabel>
                             <FormControl>
                                 <SelectTipoProducto
                                     onChange={field.onChange}
@@ -163,7 +163,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full">
+                <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"
+                >
                     Guardar
                 </Button>
             </form>

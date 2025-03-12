@@ -35,7 +35,7 @@ const SelectTipoProducto: React.FC<SelectTipoProductoProps> = ({
             data={productType}
             onChange={onChange}
             value={value}
-            placeholder="Selecciona un tipo de producto"
+            placeholder="Selecciona una Categoría"
             getKey={(item) => item.id.toString()}
             getLabel={(item) => item.name}
         />

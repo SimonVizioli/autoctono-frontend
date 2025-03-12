@@ -131,8 +131,11 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                         </FormItem>
                     )}
                 />
-                <Button type="submit" className="w-full">
-                    {initialData ? "Actualizar" : "Crear"}
+                <Button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"
+                >
+                    Guardar
                 </Button>
             </form>
         </Form>

@@ -5,6 +5,7 @@ import Modal from "../modal/modal";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { FilePlus2 } from "lucide-react";
 
 interface FilterDefinition<T> {
     key: keyof T;
@@ -97,35 +98,44 @@ const Crud = <T extends { id: string }>({
 
     return (
         <div className="container mx-auto p-4 bg-background rounded-md shadow-md">
-            <div className="flex justify-between">
-                <div>{title}</div>
-
-                <Button onClick={() => openModal()}>Crear Nuevo</Button>
-            </div>
-            <div className="flex space-x-4 mb-1">
-                {filters &&
-                    filters.map((filter) => (
-                        <div
-                            key={filter.key as string}
-                            className="flex flex-col"
-                        >
-                            <Label className="text-sm font-medium">
-                                {filter.label}
-                            </Label>
-                            <Input
-                                type="text"
-                                placeholder={filter.label}
-                                value={filterValues[filter.key as string] || ""}
-                                onChange={(e) =>
-                                    setFilterValues({
-                                        ...filterValues,
-                                        [filter.key as string]: e.target.value,
-                                    })
-                                }
-                                className="p-1"
-                            />
-                        </div>
-                    ))}
+            <div className="py-4">{title}</div>
+            <div className="flex justify-between pb-2">
+                <div className="flex space-x-4 mb-1">
+                    {filters &&
+                        filters.map((filter) => (
+                            <div
+                                key={filter.key as string}
+                                className="flex flex-col"
+                            >
+                                <Label className="text-sm font-medium">
+                                    {filter.label}
+                                </Label>
+                                <Input
+                                    type="text"
+                                    placeholder={filter.label}
+                                    value={
+                                        filterValues[filter.key as string] || ""
+                                    }
+                                    onChange={(e) =>
+                                        setFilterValues({
+                                            ...filterValues,
+                                            [filter.key as string]:
+                                                e.target.value,
+                                        })
+                                    }
+                                    className="p-1"
+                                />
+                            </div>
+                        ))}
+                </div>
+                <div className="flex items-end p-1">
+                    <Button
+                        onClick={() => openModal()}
+                        className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                    >
+                        <FilePlus2 /> Crear Nuevo
+                    </Button>
+                </div>
             </div>
 
             <CustomTable

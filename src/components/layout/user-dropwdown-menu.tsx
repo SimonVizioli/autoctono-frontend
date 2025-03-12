@@ -15,18 +15,14 @@ const UserDropdownMenu: React.FC = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button
-                    size="icon"
-                    variant="ghost"
-                    className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10"
-                >
+                <Button size="icon" variant="ghost" className="text-slate-200">
                     <User className="h-5 w-5" />
                     <span className="sr-only">Menú de usuario</span>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 align="end"
-                className="w-56 bg-ceramic-light border-ceramic-sand/20 shadow-md"
+                className="bg-slate-900 border-slate-700 text-slate-200"
             >
                 <DropdownMenuItem
                     onClick={logout}

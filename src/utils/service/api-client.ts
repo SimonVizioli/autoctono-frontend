@@ -1,7 +1,8 @@
+import { toast } from "@/hooks/use-toast";
 import axios from "axios";
-import { Navigate } from "react-router";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "asdas";
+const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -24,15 +25,35 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response && error.response.status === 401) {
-            console.error("Token inválido o expirado, cerrando sesión...");
-            localStorage.removeItem("token");
-            localStorage.removeItem("isAuthenticated");
-            localStorage.removeItem("user");
+        // Si el error tiene respuesta, extraemos el mensaje
+        if (error.response) {
+            const message =
+                error.response.data && error.response.data.message
+                    ? error.response.data.message
+                    : "Ocurrió un error inesperado";
+            // Mostramos el toast con el error
+            toast({
+                title: "Error",
+                description: message,
+            });
 
-            Navigate({ to: "/login" });
-            // window.location.href = "/login";
+            // Si el error es de autenticación, manejamos la sesión
+            if (error.response && error.response.status === 401) {
+                console.error("Token inválido o expirado, cerrando sesión...");
+                localStorage.removeItem("token");
+                localStorage.removeItem("isAuthenticated");
+                localStorage.removeItem("user");
+
+                window.location.href = "/login";
+            }
+        } else {
+            // Errores sin respuesta (problemas de red, por ejemplo)
+            toast({
+                title: "Error",
+                description: "Error de red, inténtalo nuevamente.",
+            });
         }
+
         return Promise.reject(error);
     }
 );

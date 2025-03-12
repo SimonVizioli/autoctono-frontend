@@ -3,6 +3,8 @@ import { Input } from "@/components/ui/input";
 import { ProductsApi } from "@/service/api";
 import { Product } from "@/types/product";
 import Crud from "@/utils/crud/crud";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowUpNarrowWide, CircleChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import ProductForm from "./form";
 
@@ -10,6 +12,7 @@ const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
     const [increasePercentage, setIncreasePercentage] = useState<number>(0);
+    const [showIncreaseCosts, setShowIncreaseCosts] = useState(false);
 
     useEffect(() => {
         fetchAll();
@@ -104,22 +107,51 @@ const ProductsPage: React.FC = () => {
     return (
         <div>
             {/* ✅ Controles para aumentar costos */}
-            <div className="container mx-auto p-4 bg-background rounded-md shadow-md flex items-center gap-4 mb-4">
-                <Input
-                    type="number"
-                    placeholder="Aumento %"
-                    value={increasePercentage}
-                    onChange={(e) =>
-                        setIncreasePercentage(Number(e.target.value))
-                    }
-                    className="w-32"
-                />
+            <div className="container mx-auto bg-background rounded-md flex items-center gap-4">
+                <AnimatePresence>
+                    {showIncreaseCosts && (
+                        <motion.div
+                            key="increaseCosts" // clave única para identificar el elemento
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="flex items-center gap-4"
+                        >
+                            <Input
+                                type="number"
+                                placeholder="Aumento %"
+                                value={increasePercentage}
+                                onChange={(e) =>
+                                    setIncreasePercentage(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                className="w-32"
+                            />
+                            <Button
+                                onClick={handleIncreaseCosts}
+                                disabled={selectedProducts.length === 0}
+                                variant={"outline"}
+                                className="border-orange-500 hover:bg-amber-600"
+                            >
+                                <ArrowUpNarrowWide /> Aumentar Costo
+                            </Button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
                 <Button
-                    onClick={handleIncreaseCosts}
-                    disabled={selectedProducts.length === 0}
-                    className="bg-teal-500 text-white"
+                    onClick={() => setShowIncreaseCosts(!showIncreaseCosts)}
+                    variant={"outline"}
+                    className={`
+                    } border-orange-500 hover:bg-amber-600 `}
                 >
-                    Aumentar Costo
+                    <CircleChevronRight
+                        className={`${
+                            showIncreaseCosts ? "rotate-180" : " "
+                        } transition-transform ease-in-out duration-1000`}
+                    />
                 </Button>
             </div>
 
