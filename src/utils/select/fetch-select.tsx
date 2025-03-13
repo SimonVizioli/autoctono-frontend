@@ -34,15 +34,17 @@ const FetchSelect = <T,>({
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>
-                {data.map((item) => {
-                    const key = getKey(item);
-                    const label = getLabel(item);
-                    return (
-                        <SelectItem key={key} value={key}>
-                            {label}
-                        </SelectItem>
-                    );
-                })}
+                {data.length > 0
+                    ? data.map((item) => {
+                          const key = getKey(item);
+                          const label = getLabel(item);
+                          return (
+                              <SelectItem key={key} value={key}>
+                                  {label}
+                              </SelectItem>
+                          );
+                      })
+                    : "No hay datos disponibles"}
             </SelectContent>
         </Select>
     );

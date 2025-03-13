@@ -32,7 +32,6 @@ export const generateRemitoPDF = (sale: Sales) => {
     doc.addImage(logo, "JPEG", 15, 11, 35, 35);
 
     // Fecha (arriba a la derecha)
-    doc.setFont("times", "normal");
     doc.setFontSize(15);
     doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 150, 20);
 
@@ -43,7 +42,7 @@ export const generateRemitoPDF = (sale: Sales) => {
     const telefonoCliente = sale.customer.contactNumber || "No especificado";
 
     // Ejemplo: Nombre a la izquierda, Teléfono a la derecha
-    doc.text(`Nombre: ${nombreCliente}`, 120, 35, { charSpace: 1 });
+    doc.text(`Nombre: ${nombreCliente}`, 120, 38, { charSpace: 1 });
     doc.text(`Teléfono: ${telefonoCliente}`, 120, 45, { charSpace: 1 });
 
     // ---------------------------------------------------------
@@ -60,38 +59,22 @@ export const generateRemitoPDF = (sale: Sales) => {
     autoTable(doc, {
         startY: tableStartY + 5,
         margin: { left: 15, right: 15 }, // Para no pegar a los bordes del rectángulo
-        head: [
-            [
-                "Cant.",
-                "Descripción",
-                "Desc. (%)",
-                "IVA (%)",
-                "Precio U.",
-                "Subtotal",
-            ],
-        ],
+        head: [["Cant.", "Descripción", "Desc. (%)", "Precio U.", "Subtotal"]],
         body: sale.productSales.map((item) => {
             const quantity = item.quantity || 1;
             const detail = item.product?.detail || "Sin descripción";
             const discount = item?.percentageDiscount || 0; // descuento en %
-            const iva = sale?.iva || 0; // IVA en %
             const unitPrice = item.unitPrice || 0;
 
             // Cálculo del total por producto:
-            // (cantidad * precioU) * (1 - desc/100) * (1 + iva/100)
-            const subtotal =
-                quantity *
-                unitPrice *
-                (1 - discount / 100) *
-                ((1 + Number(iva)) / 100);
+            const subtotal = quantity * unitPrice;
 
             return [
                 String(quantity),
                 detail,
                 `${discount}%`,
-                `${iva}%`,
-                `$${unitPrice.toFixed(2)}`,
-                `$${subtotal.toFixed(2)}`,
+                `$${unitPrice}`,
+                `$${subtotal * ((100 - discount) / 100)}`,
             ];
         }),
         theme: "grid",
@@ -119,21 +102,25 @@ export const generateRemitoPDF = (sale: Sales) => {
     const totalGlobal = sale.productSales.reduce((acc, item) => {
         const quantity = item.quantity || 1;
         const discount = item?.percentageDiscount || 0;
-        const iva = sale?.iva || 0;
         const unitPrice = item.unitPrice || 0;
-        const subtotal =
-            quantity *
-            unitPrice *
-            (1 - discount / 100) *
-            (1 + Number(iva) / 100);
-        return acc + subtotal;
+        const subtotal = quantity * unitPrice;
+        console.log(
+            "acc",
+            acc,
+            "subtotal",
+            subtotal,
+            "descuento",
+            (100 - discount) / 100
+        );
+        return acc + subtotal * ((100 - discount) / 100);
     }, 0);
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     // Ubicamos el texto cerca del borde derecho del recuadro de la tabla
     // (ajusta Y según tu preferencia)
-    doc.text(`Total: $${totalGlobal.toFixed(2)}`, 165, finalY + 10);
+    doc.text(`IVA: ${sale.iva}%`, 165, finalY + 10);
+    doc.text(`Total: $${totalGlobal.toFixed(2)}`, 165, finalY + 20);
 
     // ---------------------------------------------------------
     // 5) Pie con íconos (borde redondeado)

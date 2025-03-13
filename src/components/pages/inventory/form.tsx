@@ -19,6 +19,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { InventorySchema } from "@/utils/schema";
 
 type InventoryFormProps = {
     onSubmit: (data: Inventory) => void;
@@ -30,6 +32,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     initialData,
 }) => {
     const form = useForm<Inventory>({
+        resolver: zodResolver(InventorySchema),
         defaultValues: initialData || {
             quantity: 0,
             productId: "",

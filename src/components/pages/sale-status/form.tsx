@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Status } from "@/types/status";
+import { StatusSchema } from "@/utils/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -22,6 +24,7 @@ const SaleStatusForm: React.FC<SaleStatusFormProps> = ({
     initialData,
 }) => {
     const form = useForm<Status>({
+        resolver: zodResolver(StatusSchema),
         defaultValues: initialData || {
             name: "",
             code: "",

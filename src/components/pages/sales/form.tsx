@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { IVAValues, Sales } from "@/types/sales";
+import { SalesSchema } from "@/utils/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 // Props del componente
 const SalesForm: React.FC<{
@@ -35,6 +37,7 @@ const SalesForm: React.FC<{
 }> = ({ onSubmit, initialData }) => {
     // useForm con campos renombrados al formato final
     const form = useForm<Sales>({
+        resolver: zodResolver(SalesSchema),
         defaultValues: initialData
             ? {
                   ...initialData,
@@ -298,40 +301,6 @@ const SalesForm: React.FC<{
                                 )}
                             />
 
-                            {/* iva */}
-                            <FormField
-                                name="iva"
-                                control={form.control}
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>IVA</FormLabel>
-                                        <FormControl>
-                                            <Select
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Selecciona IVA" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {Object.values(
-                                                        IVAValues
-                                                    ).map((iva) => (
-                                                        <SelectItem
-                                                            key={iva}
-                                                            value={iva}
-                                                        >
-                                                            {iva}%
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
                             <Button
                                 variant="destructive"
                                 size="icon"
@@ -351,25 +320,59 @@ const SalesForm: React.FC<{
                     </Button>
                 </div>
 
-                {/* total */}
-                <FormField
-                    name="total"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Total</FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="text"
-                                    value={`$ ${field.value.toFixed(2)}`}
-                                    readOnly
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
+                <div className="flex justify-end gap-2">
+                    {/* iva */}
+                    <FormField
+                        name="iva"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>IVA</FormLabel>
+                                <FormControl>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Selecciona IVA" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Object.values(IVAValues).map(
+                                                (iva) => (
+                                                    <SelectItem
+                                                        key={iva}
+                                                        value={iva}
+                                                    >
+                                                        {iva}%
+                                                    </SelectItem>
+                                                )
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {/* total */}
+                    <FormField
+                        name="total"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Total</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="text"
+                                        value={`$ ${field.value.toFixed(2)}`}
+                                        readOnly
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
                 <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"

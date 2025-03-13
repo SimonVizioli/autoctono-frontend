@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Product } from "@/types/product";
+import { ProductSchema } from "@/utils/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -20,6 +22,7 @@ type ProductFormProps = {
 
 const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
     const form = useForm<Product>({
+        resolver: zodResolver(ProductSchema),
         defaultValues: initialData || {
             detail: "",
             name: "",
@@ -47,23 +50,42 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-4"
             >
-                {/* Nombre */}
-                <FormField
-                    name="name"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Nombre</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="Nombre del producto"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+                <div className="flex gap-4">
+                    {/* Nombre */}
+                    <FormField
+                        name="name"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem className="w-full">
+                                <FormLabel>Nombre</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Nombre del producto"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {/* Codigo */}
+                    <FormField
+                        name="code"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem className="w-full">
+                                <FormLabel>Código</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Código del producto"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
                 {/* Detalle */}
                 <FormField
                     name="detail"
@@ -81,71 +103,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
-                {/* Codigo */}
-                <FormField
-                    name="code"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Código</FormLabel>
-                            <FormControl>
-                                <Input
-                                    placeholder="Código del producto"
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                {/* Precio */}
-                <FormField
-                    name="price"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Precio</FormLabel>
-                            <FormControl>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                                        $
-                                    </span>
-                                    <Input
-                                        type="number"
-                                        placeholder="0.00"
-                                        {...field}
-                                        className="pl-8"
-                                    />
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                Costos
-                <FormField
-                    name="cost"
-                    control={form.control}
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Costos</FormLabel>
-                            <FormControl>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                                        $
-                                    </span>
-                                    <Input
-                                        type="number"
-                                        placeholder="0.00"
-                                        {...field}
-                                        className="pl-8"
-                                    />
-                                </div>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
+
                 {/* Categoría */}
                 <FormField
                     name="productTypeId"
@@ -163,6 +121,56 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
+                <div className="flex gap-4">
+                    {/* Precio */}
+                    <FormField
+                        name="price"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem className="w-full">
+                                <FormLabel>Precio</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                            $
+                                        </span>
+                                        <Input
+                                            type="number"
+                                            placeholder="0.00"
+                                            {...field}
+                                            className="pl-8"
+                                        />
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    {/* Costos */}
+                    <FormField
+                        name="cost"
+                        control={form.control}
+                        render={({ field }) => (
+                            <FormItem className="w-full">
+                                <FormLabel>Costos</FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                            $
+                                        </span>
+                                        <Input
+                                            type="number"
+                                            placeholder="0.00"
+                                            {...field}
+                                            className="pl-8"
+                                        />
+                                    </div>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
                 <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"

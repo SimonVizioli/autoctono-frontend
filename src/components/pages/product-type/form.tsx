@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ProductType } from "@/types/productType";
+import { ProductSchema } from "@/utils/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -22,6 +24,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
     initialData,
 }) => {
     const form = useForm<ProductType>({
+        resolver: zodResolver(ProductSchema),
         defaultValues: initialData || {
             name: "",
             code: "",

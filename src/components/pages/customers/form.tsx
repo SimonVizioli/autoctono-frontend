@@ -12,6 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Customer } from "@/types/customer";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CustomerSchema } from "@/utils/schema";
 
 interface CustomerFormProps {
     onSubmit: (data: Customer) => void;
@@ -23,6 +25,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     initialData,
 }) => {
     const form = useForm<Customer>({
+        resolver: zodResolver(CustomerSchema),
         defaultValues: initialData || {
             companyName: "",
             firstName: "",
