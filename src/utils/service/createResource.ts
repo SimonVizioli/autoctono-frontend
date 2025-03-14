@@ -5,6 +5,7 @@ interface ApiResource<T> {
     post: (data: unknown) => Promise<T>;
     put: (id: string | number, data: unknown) => Promise<T>;
     delete: (id: string | number) => Promise<void>;
+    putWithBody: (data: unknown) => Promise<T>;
 }
 
 export const createResource = <T>(resourcePath: string): ApiResource<T> => ({
@@ -18,6 +19,10 @@ export const createResource = <T>(resourcePath: string): ApiResource<T> => ({
     },
     put: async (id, data) => {
         const response = await api.put<T>(`${resourcePath}/${id}`, data);
+        return response.data;
+    },
+    putWithBody: async (data) => {
+        const response = await api.put<T>(`${resourcePath}`, data);
         return response.data;
     },
     delete: async (id) => {

@@ -11,6 +11,6 @@ export const ProductsApi = createResource("/products");
 export const ProductsSaleApi = createResource("/product-sale");
 export const ProductTypesApi = {
     ...createResource("/product-types"),
-    updatePrices: createResource("/update-prices"),
+    updatePrices: createResource("/products/update-prices"),
 };
 export const CustomersApi = createResource("/customers");
