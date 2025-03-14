@@ -127,7 +127,7 @@ const ProductsPage: React.FC = () => {
 
     return (
         <div>
-            <div className="m-4">
+            <div className="container mx-auto p-4 ">
                 <Button
                     type="button"
                     onClick={() => setIsModalOpen(true)}

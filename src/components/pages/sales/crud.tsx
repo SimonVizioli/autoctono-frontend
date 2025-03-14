@@ -6,10 +6,11 @@ import { Sales } from "@/types/sales";
 import Crud from "@/utils/crud/crud";
 import React, { useEffect, useState } from "react";
 import SalesForm from "./form";
-import { FileText } from "lucide-react";
+import { FileText, Loader2 } from "lucide-react";
 
 const SalesPage: React.FC = () => {
     const [sales, setSales] = useState<Sales[]>([]);
+    const [loadingRemitoId, setLoadingRemitoId] = useState<string | null>(null);
 
     useEffect(() => {
         fetchAll();
@@ -139,11 +140,21 @@ const SalesPage: React.FC = () => {
                 return (
                     <Button
                         onClick={() => {
-                            generateRemitoPDF(item);
+                            setLoadingRemitoId(item.id);
+                            setTimeout(() => {
+                                generateRemitoPDF(item);
+                                setLoadingRemitoId(null);
+                            }, 2000); // Pequeño retardo para que se actualice el estado en la UI
                         }}
                         variant={"outline"}
+                        disabled={loadingRemitoId === item.id}
                     >
-                        <FileText /> Generar Remito
+                        {loadingRemitoId === item.id ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <FileText className="mr-2" />
+                        )}{" "}
+                        Generar Remito
                     </Button>
                 );
             }}

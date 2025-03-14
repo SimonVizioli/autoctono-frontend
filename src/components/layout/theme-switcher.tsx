@@ -13,7 +13,7 @@ const ThemeSwitcher: React.FC = () => {
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="text-ceramic-clay hover:text-ceramic-terracotta hover:bg-ceramic-sand/10"
+            className="text-white hover:text-orange-600 hover:bg-orange-200/10"
         >
             <motion.div
                 key={theme}

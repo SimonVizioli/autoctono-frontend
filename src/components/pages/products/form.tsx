@@ -9,8 +9,10 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ProductTypesApi } from "@/service/api";
 import { Product } from "@/types/product";
-import React, { useEffect } from "react";
+import { ProductType } from "@/types/productType";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 type ProductFormProps = {
@@ -30,12 +32,54 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
         },
     });
 
-    // Observar cambios en el tipo de producto
-    const tipoProductoId = form.watch("productTypeId");
+    // Observar cambios en "cost" y "productTypeId"
+    const cost = form.watch("cost");
+    form.watch("productTypeId");
 
-    useEffect(() => {}, [tipoProductoId, form]);
+    // Estado para guardar el tipo de producto seleccionado (asumiendo que incluye defaultSalePercentage)
+    const [selectedProductType, setSelectedProductType] =
+        useState<ProductType>();
+    const [productTypes, setProductTypes] = useState<ProductType[]>();
+
+    const getAllProductTypes = async () => {
+        const response = (await ProductTypesApi.get()) as ProductType[];
+        setProductTypes(response);
+    };
+
+    useEffect(() => {
+        getAllProductTypes();
+    }, []);
+
+    // Si tu componente SelectTipoProducto solo retorna el ID, deberías buscar
+    // el objeto completo (por ejemplo, de un listado de tipos de producto).
+    // Aquí, supongamos que el componente puede devolver el objeto completo.
+    const handleProductTypeChange = (value: string) => {
+        // Si 'value' es un objeto con la info, lo seteamos; de lo contrario, ajusta según tu implementación
+        const selected = productTypes?.find((pt) => pt.id == value);
+        if (selected) setSelectedProductType(selected);
+        form.setValue("productTypeId", value);
+    };
+
+    // Actualizar precio dinámicamente al cambiar el costo o el tipo de producto
+    // Obtén el porcentaje de venta:
+    // Si estás editando, tomamos el valor de initialData;
+    // en create, lo obtenemos del tipo de producto seleccionado (o 0 si no está definido).
+    useEffect(() => {
+        const defaultSalePercentage =
+            initialData?.productType?.defaultSalePercentage ||
+            selectedProductType?.defaultSalePercentage ||
+            0;
+
+        if (cost && !isNaN(Number(cost))) {
+            const newPrice =
+                parseFloat(cost.toString()) *
+                (1 + parseFloat(defaultSalePercentage.toString()) / 100);
+            form.setValue("price", newPrice);
+        }
+    }, [cost, selectedProductType, initialData, form]);
 
     const handleSubmit = (values: Product) => {
+        // Asegúrate de que el precio sea numérico
         values.price = parseFloat(values.price.toString());
         onSubmit(values);
         form.reset();
@@ -66,7 +110,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                             </FormItem>
                         )}
                     />
-                    {/* Codigo */}
+                    {/* Código */}
                     <FormField
                         name="code"
                         control={form.control}
@@ -103,7 +147,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         </FormItem>
                     )}
                 />
-
                 {/* Categoría */}
                 <FormField
                     name="productTypeId"
@@ -113,8 +156,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                         <FormItem>
                             <FormLabel>Categoría</FormLabel>
                             <FormControl>
+                                {/* Ajustamos el onChange para obtener el objeto completo o el ID */}
                                 <SelectTipoProducto
-                                    onChange={field.onChange}
+                                    onChange={(value) => {
+                                        handleProductTypeChange(value);
+                                        field.onChange(value);
+                                    }}
                                     value={field.value.toString()}
                                 />
                             </FormControl>
@@ -127,13 +174,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                     <FormField
                         name="price"
                         control={form.control}
-                        rules={{
-                            required: "El precio es requerido",
-                            min: {
-                                value: 0.01,
-                                message: "El precio debe ser mayor que 0",
-                            },
-                        }}
                         render={({ field }) => (
                             <FormItem className="w-full">
                                 <FormLabel>Precio</FormLabel>
@@ -147,6 +187,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                                             placeholder="0.00"
                                             {...field}
                                             className="pl-8"
+                                            readOnly
                                         />
                                     </div>
                                 </FormControl>
@@ -154,7 +195,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                             </FormItem>
                         )}
                     />
-                    {/* Costos */}
+                    {/* Costo */}
                     <FormField
                         name="cost"
                         control={form.control}
@@ -162,7 +203,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                             required: "El costo es requerido",
                             min: {
                                 value: 0.01,
-                                message: "El cost debe ser mayor que 0",
+                                message: "El costo debe ser mayor que 0",
                             },
                         }}
                         render={({ field }) => (
