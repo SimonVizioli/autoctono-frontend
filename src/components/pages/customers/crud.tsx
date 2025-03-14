@@ -78,6 +78,7 @@ const Customers: React.FC = () => {
                 { key: "email", label: "Email" },
                 { key: "cuit", label: "Cuit" },
                 { key: "contactNumber", label: "Número de contacto" },
+                { key: "currentAccount", label: "Balance" },
             ]}
             filters={[
                 { key: "companyName", label: "Razón Social" },

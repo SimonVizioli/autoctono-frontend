@@ -6,4 +6,5 @@ export interface Customer {
     email: string;
     cuit: string;
     contactNumber: string;
+    currentAccount: number;
 }
