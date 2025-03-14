@@ -7,8 +7,9 @@ import { toast } from "@/hooks/use-toast";
 import SelectTipoProducto from "@/components/product-type/select";
 import Modal from "@/utils/modal/modal";
 import { Input } from "@/components/ui/input";
-import { ArrowUpCircle, X } from "lucide-react";
+import { ArrowUpCircle, FileText, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { generateCatalogPDF } from "@/components/products/generateCatalogoPDF";
 
 const ProductsPage: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
@@ -16,6 +17,7 @@ const ProductsPage: React.FC = () => {
     // Estados para el formulario del modal
     const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
     const [amountToIncrease, setAmountToIncrease] = useState<number>(0);
+    const [loadingCatalogo, setLoadingCatalogo] = useState<boolean>(false);
 
     useEffect(() => {
         fetchAll();
@@ -127,15 +129,38 @@ const ProductsPage: React.FC = () => {
 
     return (
         <div>
-            <div className="container mx-auto p-4 ">
-                <Button
-                    type="button"
-                    onClick={() => setIsModalOpen(true)}
-                    className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300 shadow-md hover:shadow-lg"
-                >
-                    <ArrowUpCircle className="h-5 w-5" />
-                    Actualizar Precios
-                </Button>
+            <div className="flex p-4 container mx-auto gap-2">
+                <div>
+                    <Button
+                        type="button"
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                    >
+                        <ArrowUpCircle className="h-5 w-5" />
+                        Actualizar Precios
+                    </Button>
+                </div>
+                <div>
+                    <Button
+                        onClick={() => {
+                            setLoadingCatalogo(true);
+                            setTimeout(() => {
+                                generateCatalogPDF(products);
+                                setLoadingCatalogo(false);
+                            }, 2000); // Pequeño retardo para que se actualice el estado en la UI
+                        }}
+                        variant={"outline"}
+                        disabled={loadingCatalogo}
+                        className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-medium transition-all duration-300 shadow-md hover:shadow-lg"
+                    >
+                        {loadingCatalogo ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <FileText className="mr-2" />
+                        )}{" "}
+                        Generar Catálogo
+                    </Button>
+                </div>
             </div>
             {/* Modal para seleccionar categoría y porcentaje */}
             <Modal
