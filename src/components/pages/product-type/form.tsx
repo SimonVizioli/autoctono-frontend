@@ -9,8 +9,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ProductType } from "@/types/productType";
-import { ProductSchema } from "@/utils/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -24,11 +22,11 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
     initialData,
 }) => {
     const form = useForm<ProductType>({
-        resolver: zodResolver(ProductSchema),
         defaultValues: initialData || {
             name: "",
             code: "",
             description: "",
+            defaultSalePercentage: 0,
         },
     });
 
@@ -46,6 +44,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
                 <FormField
                     name="name"
                     control={form.control}
+                    rules={{ required: "El nombre es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Nombre</FormLabel>
@@ -64,6 +63,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
                 <FormField
                     name="code"
                     control={form.control}
+                    rules={{ required: "El código es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Código</FormLabel>
@@ -82,6 +82,7 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
                 <FormField
                     name="description"
                     control={form.control}
+                    rules={{ required: "La descripción es requerida" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Descripción</FormLabel>
@@ -96,6 +97,38 @@ const ProductTypeForm: React.FC<ProductTypeFormProps> = ({
                         </FormItem>
                     )}
                 />
+
+                <FormField
+                    name="defaultSalePercentage"
+                    control={form.control}
+                    rules={{
+                        required: "El porcentaje de venta es requerido",
+                        min: {
+                            value: 0,
+                            message: "El porcentaje no puede ser negativo",
+                        },
+                        max: {
+                            value: 100,
+                            message: "El porcentaje no puede ser mayor a 100",
+                        },
+                    }}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>
+                                Porcentaje de venta por defecto
+                            </FormLabel>
+                            <FormControl>
+                                <Input
+                                    type="number"
+                                    placeholder="Porcentaje de venta por defecto"
+                                    {...field}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
                 <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"

@@ -19,8 +19,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { InventorySchema } from "@/utils/schema";
 
 type InventoryFormProps = {
     onSubmit: (data: Inventory) => void;
@@ -32,16 +30,19 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     initialData,
 }) => {
     const form = useForm<Inventory>({
-        resolver: zodResolver(InventorySchema),
         defaultValues: initialData || {
             quantity: 0,
             productId: "",
             product: {},
+            unitOfMeasurement: unitOfMeasurement.UNIT, // Valor por defecto (por ejemplo, "unit")
         },
     });
 
     const handleSubmit = (values: Inventory) => {
-        values.productId = values.product.id;
+        // Asignamos el id del producto seleccionado
+        if (values.product && values.product.id) {
+            values.productId = values.product.id;
+        }
         onSubmit(values);
         form.reset();
     };
@@ -55,26 +56,39 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                 <FormField
                     name="product"
                     control={form.control}
-                    render={({ field }) => {
-                        return (
-                            <FormItem>
-                                <FormLabel>Producto</FormLabel>
-                                <FormControl>
-                                    <SelectProducto
-                                        onChange={(selectedProduct) => {
-                                            field.onChange(selectedProduct);
-                                        }}
-                                        value={field?.value?.id?.toString()}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        );
+                    rules={{
+                        required: "Debes seleccionar un producto",
+                        validate: (value) =>
+                            value && value.id
+                                ? true
+                                : "Debes seleccionar un producto",
                     }}
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Producto</FormLabel>
+                            <FormControl>
+                                <SelectProducto
+                                    onChange={(selectedProduct) =>
+                                        field.onChange(selectedProduct)
+                                    }
+                                    value={field.value?.id?.toString() || ""}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
                 />
+
                 <FormField
                     name="quantity"
                     control={form.control}
+                    rules={{
+                        required: "La cantidad es requerida",
+                        min: {
+                            value: 1,
+                            message: "La cantidad debe ser al menos 1",
+                        },
+                    }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Cantidad</FormLabel>
@@ -89,9 +103,13 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                         </FormItem>
                     )}
                 />
+
                 <FormField
                     name="unitOfMeasurement"
                     control={form.control}
+                    rules={{
+                        required: "Debes seleccionar una unidad de medida",
+                    }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Unidad de medida</FormLabel>
@@ -123,6 +141,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
                         </FormItem>
                     )}
                 />
+
                 <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"

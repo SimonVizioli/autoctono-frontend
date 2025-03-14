@@ -9,8 +9,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Status } from "@/types/status";
-import { StatusSchema } from "@/utils/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -24,7 +22,6 @@ const SaleStatusForm: React.FC<SaleStatusFormProps> = ({
     initialData,
 }) => {
     const form = useForm<Status>({
-        resolver: zodResolver(StatusSchema),
         defaultValues: initialData || {
             name: "",
             code: "",
@@ -32,8 +29,8 @@ const SaleStatusForm: React.FC<SaleStatusFormProps> = ({
         },
     });
 
-    const handleSubmit = (values: Status) => {
-        onSubmit(values);
+    const handleSubmit = (data: Status) => {
+        onSubmit(data);
         form.reset();
     };
 
@@ -46,6 +43,7 @@ const SaleStatusForm: React.FC<SaleStatusFormProps> = ({
                 <FormField
                     name="name"
                     control={form.control}
+                    rules={{ required: "El nombre es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Nombre</FormLabel>
@@ -64,6 +62,7 @@ const SaleStatusForm: React.FC<SaleStatusFormProps> = ({
                 <FormField
                     name="code"
                     control={form.control}
+                    rules={{ required: "El código es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Código</FormLabel>
@@ -82,6 +81,7 @@ const SaleStatusForm: React.FC<SaleStatusFormProps> = ({
                 <FormField
                     name="description"
                     control={form.control}
+                    rules={{ required: "La descripción es requerida" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Descripción</FormLabel>
@@ -96,6 +96,7 @@ const SaleStatusForm: React.FC<SaleStatusFormProps> = ({
                         </FormItem>
                     )}
                 />
+
                 <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"

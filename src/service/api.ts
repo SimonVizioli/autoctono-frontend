@@ -9,5 +9,8 @@ export const SaleStatusApi = createResource("/sales-status");
 export const StockApi = createResource("/stocks");
 export const ProductsApi = createResource("/products");
 export const ProductsSaleApi = createResource("/product-sale");
-export const ProductTypesApi = createResource("/product-types");
+export const ProductTypesApi = {
+    ...createResource("/product-types"),
+    updatePrices: createResource("/update-prices"),
+};
 export const CustomersApi = createResource("/customers");

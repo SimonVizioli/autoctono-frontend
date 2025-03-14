@@ -40,6 +40,7 @@ const ProductTypePage: React.FC = () => {
 
     const update = async (updatedItem: ProductType) => {
         try {
+            console.log("updatedItem", updatedItem);
             const id = updatedItem.id;
             const data = updatedItem;
             const updateProductType = (await ProductTypesApi.put(
@@ -52,7 +53,7 @@ const ProductTypePage: React.FC = () => {
                 )
             );
         } catch (error: unknown) {
-            console.error("Error en fetchAll:");
+            console.error("Error en Update");
             throw error;
         }
     };
@@ -83,6 +84,7 @@ const ProductTypePage: React.FC = () => {
                 },
                 { key: "code", label: "Código" },
                 { key: "description", label: "Descripción" },
+                { key: "defaultSalePercentage", label: "Valor de Venta" },
             ]}
             customModalHeader={"Crear nueva categoría de producto"}
             data={productType}

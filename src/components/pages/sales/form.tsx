@@ -27,23 +27,18 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { IVAValues, Sales } from "@/types/sales";
-import { SalesSchema } from "@/utils/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 
-// Props del componente
 const SalesForm: React.FC<{
     onSubmit: (data: Sales) => void;
     initialData?: Sales;
 }> = ({ onSubmit, initialData }) => {
-    // useForm con campos renombrados al formato final
     const form = useForm<Sales>({
-        resolver: zodResolver(SalesSchema),
         defaultValues: initialData
             ? {
                   ...initialData,
                   products:
                       initialData.productSales?.map((ps) => ({
-                          productId: ps.product.id, // Accedemos al id desde `ps.product`
+                          productId: ps.product.id,
                           unitPrice: ps.unitPrice,
                           quantity: ps.quantity,
                           percentageDiscount: ps.percentageDiscount,
@@ -66,16 +61,13 @@ const SalesForm: React.FC<{
         keyName: "__fieldId",
     });
 
-    // Escuchamos los productos para recalcular el total automáticamente
-    // Usamos useWatch para observar "products"
+    // Observar los productos para recalcular el total automáticamente
     const productsWatcher = useWatch({
         control: form.control,
         name: "products",
     });
 
-    // useEffect que recalcula el total
     useEffect(() => {
-        // Aseguramos que productsWatcher siempre sea un array
         const products = Array.isArray(productsWatcher) ? productsWatcher : [];
         const newTotal = products.reduce(
             (acc, item) => acc + (item.unitPrice || 0) * (item.quantity || 1),
@@ -84,43 +76,28 @@ const SalesForm: React.FC<{
         form.setValue("total", newTotal);
     }, [productsWatcher, form]);
 
-    /**
-     * Cuando seleccionas un producto en <SelectProducto>:
-     *  - Asignamos su `productId`
-     *  - Asignamos su `unitprice` (basado en la lógica que necesites)
-     */
-    // Mira cómo productId es un string, unitPrice es un number
+    // Cuando se selecciona un producto en <SelectProducto>
     const handleProductSelection = (
         index: number,
-        selectedProduct: {
-            id: string;
-            price: number;
-        }
+        selectedProduct: { id: string; price: number }
     ) => {
         update(index, {
             ...fields[index],
-            // Solo guardamos el ID en productId
             productId: selectedProduct.id,
-            // Guardamos el precio en 'unitPrice'
             unitPrice: selectedProduct.price,
         });
     };
 
-    // Al agregar un item:
+    // Agregar un producto a la lista
     const handleAddProduct = () => {
         append({
-            productId: "", // no un objeto
+            productId: "",
             unitPrice: 0,
             quantity: 1,
             percentageDiscount: 0,
         });
     };
 
-    // Reemplaza 'price' por 'unitPrice' donde corresponda
-
-    /**
-     * Al enviar el formulario, simplemente despachamos la data
-     */
     const handleSubmit = (values: Sales) => {
         if (!values.iva) {
             toast({
@@ -140,10 +117,11 @@ const SalesForm: React.FC<{
                 onSubmit={form.handleSubmit(handleSubmit)}
                 className="space-y-4"
             >
-                {/* Campo detail */}
+                {/* Detalle */}
                 <FormField
                     name="detail"
                     control={form.control}
+                    rules={{ required: "El detalle es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Detalle</FormLabel>
@@ -158,10 +136,11 @@ const SalesForm: React.FC<{
                     )}
                 />
 
-                {/* Campo customerId */}
+                {/* Cliente */}
                 <FormField
                     name="customerId"
                     control={form.control}
+                    rules={{ required: "Debes seleccionar un cliente" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Cliente</FormLabel>
@@ -176,10 +155,11 @@ const SalesForm: React.FC<{
                     )}
                 />
 
-                {/* Campo statusId */}
+                {/* Estado */}
                 <FormField
                     name="statusId"
                     control={form.control}
+                    rules={{ required: "Debes seleccionar un estado" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Estado</FormLabel>
@@ -203,10 +183,17 @@ const SalesForm: React.FC<{
                             key={fieldItem.__fieldId}
                             className="flex items-end space-x-4"
                         >
-                            {/* productId */}
+                            {/* Producto */}
                             <FormField
                                 name={`products.${index}.productId`}
                                 control={form.control}
+                                rules={{
+                                    required: "Debes seleccionar un producto",
+                                    validate: (value) =>
+                                        value
+                                            ? true
+                                            : "Debes seleccionar un producto",
+                                }}
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Producto</FormLabel>
@@ -226,10 +213,18 @@ const SalesForm: React.FC<{
                                 )}
                             />
 
-                            {/* quantity */}
+                            {/* Cantidad */}
                             <FormField
                                 name={`products.${index}.quantity`}
                                 control={form.control}
+                                rules={{
+                                    required: "La cantidad es requerida",
+                                    min: {
+                                        value: 1,
+                                        message:
+                                            "La cantidad debe ser al menos 1",
+                                    },
+                                }}
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Cantidad</FormLabel>
@@ -257,7 +252,7 @@ const SalesForm: React.FC<{
                                 )}
                             />
 
-                            {/* unitPrice */}
+                            {/* Precio Unitario (read only) */}
                             <FormField
                                 name={`products.${index}.unitPrice`}
                                 control={form.control}
@@ -277,10 +272,24 @@ const SalesForm: React.FC<{
                                     </FormItem>
                                 )}
                             />
-                            {/* percentageDiscount */}
+
+                            {/* Descuento (%) */}
                             <FormField
                                 name={`products.${index}.percentageDiscount`}
                                 control={form.control}
+                                rules={{
+                                    required: "El descuento es requerido",
+                                    min: {
+                                        value: 0,
+                                        message:
+                                            "El descuento no puede ser negativo",
+                                    },
+                                    max: {
+                                        value: 100,
+                                        message:
+                                            "El descuento no puede ser mayor a 100",
+                                    },
+                                }}
                                 render={({ field }) => (
                                     <FormItem className="flex-1">
                                         <FormLabel>Descuento (%)</FormLabel>
@@ -321,10 +330,13 @@ const SalesForm: React.FC<{
                 </div>
 
                 <div className="flex justify-end gap-2">
-                    {/* iva */}
+                    {/* IVA */}
                     <FormField
                         name="iva"
                         control={form.control}
+                        rules={{
+                            required: "Debes seleccionar un valor de IVA",
+                        }}
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>IVA</FormLabel>
@@ -354,7 +366,7 @@ const SalesForm: React.FC<{
                             </FormItem>
                         )}
                     />
-                    {/* total */}
+                    {/* Total (read only) */}
                     <FormField
                         name="total"
                         control={form.control}
@@ -373,6 +385,7 @@ const SalesForm: React.FC<{
                         )}
                     />
                 </div>
+
                 <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white font-medium transition-all duration-300"

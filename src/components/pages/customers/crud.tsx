@@ -79,6 +79,11 @@ const Customers: React.FC = () => {
                 { key: "cuit", label: "Cuit" },
                 { key: "contactNumber", label: "Número de contacto" },
             ]}
+            filters={[
+                { key: "companyName", label: "Razón Social" },
+                { key: "firstName", label: "Nombre" },
+                { key: "lastName", label: "Nombre" },
+            ]}
             data={customers}
             customModalHeader={"Alta a nuevo cliente"}
             fetchAll={fetchAll}

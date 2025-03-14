@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import CustomTable from "../table/custom-table";
-import ActionsColumn from "../actions/action-column";
-import Modal from "../modal/modal";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { FilePlus2 } from "lucide-react";
+import React, { useState } from "react";
+import ActionsColumn from "../actions/action-column";
+import Modal from "../modal/modal";
+import CustomTable from "../table/custom-table";
 
 interface FilterDefinition<T> {
     key: keyof T;
@@ -107,9 +106,6 @@ const Crud = <T extends { id: string }>({
                                 key={filter.key as string}
                                 className="flex flex-col"
                             >
-                                <Label className="text-sm font-medium">
-                                    {filter.label}
-                                </Label>
                                 <Input
                                     type="text"
                                     placeholder={filter.label}

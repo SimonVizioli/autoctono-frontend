@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Product } from "@/types/product";
-import { ProductSchema } from "@/utils/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
@@ -22,7 +20,6 @@ type ProductFormProps = {
 
 const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
     const form = useForm<Product>({
-        resolver: zodResolver(ProductSchema),
         defaultValues: initialData || {
             detail: "",
             name: "",
@@ -55,6 +52,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                     <FormField
                         name="name"
                         control={form.control}
+                        rules={{ required: "El nombre es requerido" }}
                         render={({ field }) => (
                             <FormItem className="w-full">
                                 <FormLabel>Nombre</FormLabel>
@@ -72,6 +70,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                     <FormField
                         name="code"
                         control={form.control}
+                        rules={{ required: "El código es requerido" }}
                         render={({ field }) => (
                             <FormItem className="w-full">
                                 <FormLabel>Código</FormLabel>
@@ -90,6 +89,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                 <FormField
                     name="detail"
                     control={form.control}
+                    rules={{ required: "La descripción es requerida" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Detalle</FormLabel>
@@ -108,6 +108,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                 <FormField
                     name="productTypeId"
                     control={form.control}
+                    rules={{ required: "La categoría es requerida" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Categoría</FormLabel>
@@ -126,6 +127,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                     <FormField
                         name="price"
                         control={form.control}
+                        rules={{
+                            required: "El precio es requerido",
+                            min: {
+                                value: 0.01,
+                                message: "El precio debe ser mayor que 0",
+                            },
+                        }}
                         render={({ field }) => (
                             <FormItem className="w-full">
                                 <FormLabel>Precio</FormLabel>
@@ -150,9 +158,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ onSubmit, initialData }) => {
                     <FormField
                         name="cost"
                         control={form.control}
+                        rules={{
+                            required: "El costo es requerido",
+                            min: {
+                                value: 0.01,
+                                message: "El cost debe ser mayor que 0",
+                            },
+                        }}
                         render={({ field }) => (
                             <FormItem className="w-full">
-                                <FormLabel>Costos</FormLabel>
+                                <FormLabel>Costo</FormLabel>
                                 <FormControl>
                                     <div className="relative">
                                         <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">

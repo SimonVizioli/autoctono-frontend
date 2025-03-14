@@ -12,8 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Customer } from "@/types/customer";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CustomerSchema } from "@/utils/schema";
 
 interface CustomerFormProps {
     onSubmit: (data: Customer) => void;
@@ -25,7 +23,6 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
     initialData,
 }) => {
     const form = useForm<Customer>({
-        resolver: zodResolver(CustomerSchema),
         defaultValues: initialData || {
             companyName: "",
             firstName: "",
@@ -56,6 +53,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 <FormField
                     control={form.control}
                     name="companyName"
+                    rules={{ required: "La razón social es requerida" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Razón Social</FormLabel>
@@ -69,6 +67,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 <FormField
                     control={form.control}
                     name="firstName"
+                    rules={{ required: "El nombre es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Nombre</FormLabel>
@@ -82,6 +81,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 <FormField
                     control={form.control}
                     name="lastName"
+                    rules={{ required: "El apellido es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Apellido</FormLabel>
@@ -95,6 +95,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 <FormField
                     control={form.control}
                     name="email"
+                    rules={{
+                        required: "El email es requerido",
+                        pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "El email no es válido",
+                        },
+                    }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Email</FormLabel>
@@ -111,6 +118,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 <FormField
                     control={form.control}
                     name="cuit"
+                    rules={{ required: "El CUIT es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Cuit</FormLabel>
@@ -124,6 +132,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
                 <FormField
                     control={form.control}
                     name="contactNumber"
+                    rules={{ required: "El número de contacto es requerido" }}
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Número de contacto</FormLabel>
